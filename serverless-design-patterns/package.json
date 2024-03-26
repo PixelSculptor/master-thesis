@@ -1,25 +1,26 @@
 {
-  "name": "serverless-design-patterns",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "sst dev",
-    "build": "sst build",
-    "deploy": "sst deploy",
-    "remove": "sst remove",
-    "console": "sst console",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@tsconfig/node18": "^18.2.3",
-    "aws-cdk-lib": "2.132.1",
-    "constructs": "10.3.0",
-    "sst": "^2.41.4",
-    "typescript": "^5.4.3",
-    "vitest": "^1.4.0"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+    "name": "serverless-design-patterns",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "sst dev",
+        "build": "sst build",
+        "deploy": "sst deploy",
+        "remove": "sst remove",
+        "console": "sst console",
+        "typecheck": "tsc --noEmit",
+        "test": "sst bind vitest run"
+    },
+    "devDependencies": {
+        "@tsconfig/node18": "^18.2.3",
+        "aws-cdk-lib": "2.132.1",
+        "constructs": "10.3.0",
+        "sst": "^2.41.4",
+        "typescript": "^5.4.3",
+        "vitest": "^1.4.0"
+    },
+    "workspaces": [
+        "packages/*"
+    ]
 }
