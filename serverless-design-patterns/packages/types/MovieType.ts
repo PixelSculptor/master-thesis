@@ -3,4 +3,4 @@ export type MovieType = {
     movieId: string;
     rating: number;
     timestamp: string;
-}
+};
