@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="layer2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/serverless-design-patterns/node_modules/.pnpm/aws-cdk-lib@2.132.1_constructs@10.3.0/node_modules/@aws-cdk/asset-awscli-v1/lib/layer.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
