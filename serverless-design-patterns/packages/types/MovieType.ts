@@ -4,3 +4,7 @@ export type MovieType = {
     rating: number;
     timestamp: string;
 };
+
+export type MovieMostFamousType = MovieType & {
+    numOfRatings: number;
+};
