@@ -5,6 +5,6 @@ export type MovieType = {
     timestamp: string;
 };
 
-export type MovieMostFamousType = MovieType & {
+export type MovieMostFamousType = Pick<MovieType, 'movieId'> & {
     numOfRatings: number;
 };
