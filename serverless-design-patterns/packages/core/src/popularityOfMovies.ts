@@ -14,7 +14,7 @@ function countNumOfRatings(movieSet: MovieType[]): MovieMostFamousType[] {
         return acc;
     }, [] as MovieMostFamousType[]);
 
-    return sortMoviesByNumOfRatings(countRatings);
+    return countRatings;
 }
 
 const sortMoviesByNumOfRatings = (
