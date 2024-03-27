@@ -26,12 +26,23 @@ const sortUsersActivity = (
 const userActivityAscending = (
     firstUser: UserType,
     secondUser: UserType,
-): number => firstUser.numOfReviews - secondUser.numOfReviews;
+): number => {
+    const diff = firstUser.numOfReviews - secondUser.numOfReviews;
+    return diff !== 0 ? diff : firstUser.userId > secondUser.userId ? 1 : -1;
+};
+
 const userActivityDescending = (
     firstUser: UserType,
     secondUser: UserType,
-): number => secondUser.numOfReviews - firstUser.numOfReviews;
+): number => {
+    const diff = secondUser.numOfReviews - firstUser.numOfReviews;
+    return diff !== 0 ? diff : firstUser.userId > secondUser.userId ? 1 : -1;
+};
 
 export function mostActiveUsers(movies: MovieType[]): UserType[] {
     return sortUsersActivity(userActivity(movies), userActivityDescending);
+}
+
+export function leastActiveUsers(movies: MovieType[]): UserType[] {
+    return sortUsersActivity(userActivity(movies), userActivityAscending);
 }
