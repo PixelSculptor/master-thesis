@@ -37,6 +37,7 @@ const compareDescending = (
     firstMovie: MovieMostFamousType,
     secondMovie: MovieMostFamousType,
 ): number => secondMovie.numOfRatings - firstMovie.numOfRatings;
+
 const compareAscending = (
     firstMovie: MovieMostFamousType,
     secondMovie: MovieMostFamousType,
