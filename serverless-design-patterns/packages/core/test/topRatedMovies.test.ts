@@ -6,7 +6,7 @@ import {
     worstRatedMovies,
 } from '../src/computing/topRatedMovies';
 
-describe('Unit tests for counting top rated movies', () => {
+describe('Unit tests for topRatedMovies computing function', () => {
     it('Should return list of movies sorted by the best average mark', () => {
         const result = topRatedMovies(movies);
         expect(result).toMatchObject([

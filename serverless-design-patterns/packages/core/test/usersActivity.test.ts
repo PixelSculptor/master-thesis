@@ -6,7 +6,7 @@ import {
 } from '../src/computing/usersAcivity';
 import movies from '../mocks/movies.json';
 
-describe('Users Activity unit tests', () => {
+describe('Unit tests for mostActiveUsers compute function', () => {
     it('should return array of users sorted by activity (num of ratings)', () => {
         const result = mostActiveUsers(movies);
         expect(result).toMatchObject([

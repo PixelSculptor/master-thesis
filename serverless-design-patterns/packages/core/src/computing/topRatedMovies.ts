@@ -52,7 +52,7 @@ const sortTopRatingMovies = (movieAverageRating: MovieRatingType[]) =>
 const sortWorstRatedMovies = (movieAverageRating: MovieRatingType[]) =>
     [...movieAverageRating].sort(topRatedMoviesAscending);
 
-function computeAverageRatingMovies(movieSet: MovieType[]): MovieRatingType[] {
+export function computeAverageRatingMovies(movieSet: MovieType[]): MovieRatingType[] {
     const movieWithAllMarks = gatherMarks(movieSet);
     const moviesAverageRatingList = movieWithAllMarks.map(
         ({ movieId, listOfRatings }) => {

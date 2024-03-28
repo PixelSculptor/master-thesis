@@ -2,31 +2,7 @@ import {
     MovieRatingAndMostFamousType,
     MovieType,
 } from '../../../types/MovieType';
-import { roundToTwoDecimalPlaces } from '../utils/roundMarks';
-
-function computePopularMovies(
-    movieSet: MovieType[],
-): MovieRatingAndMostFamousType[] {
-    const mostFamousMovies = movieSet.reduce((movieRatings, movie) => {
-        const movieRating = movieRatings.find(
-            ({ movieId: movieToCompare }: MovieRatingAndMostFamousType) =>
-                movieToCompare === movie.movieId,
-        );
-        if (movieRating) {
-            movieRating.listOfRatings.push(movie.rating);
-        } else {
-            movieRatings.push({
-                movieId: movie.movieId,
-                averageRating: movie.rating,
-                numOfRatings: 1,
-                listOfRatings: [movie.rating],
-            });
-        }
-        return movieRatings;
-    }, [] as MovieRatingAndMostFamousType[]);
-
-    return mostFamousMovies;
-}
+import { computeAverageRatingMovies } from './topRatedMovies';
 
 const theMostPopularMoviesPredicate = (
     firstMovie: MovieRatingAndMostFamousType,
@@ -62,25 +38,21 @@ const sortMovies = (
     return [...movies].sort(predicate);
 };
 
-function computeTheBestPopularMovies(
-    movieSet: MovieRatingAndMostFamousType[],
+function computeTheBestMovies(
+    movieSet: MovieType[],
 ): MovieRatingAndMostFamousType[] {
-    const bestPopularMovies = movieSet.map((movie) => {
-        const averageRating = roundToTwoDecimalPlaces(
-            movie.listOfRatings.reduce((sum, mark) => sum + mark, 0) /
-                movie.listOfRatings.length,
-        );
-        return { ...movie, averageRating };
-    });
-    return bestPopularMovies;
+    const movieRatedList = computeAverageRatingMovies(movieSet);
+    const movieRatedListWithCountedRatings = movieRatedList.map((movie) => ({
+        ...movie,
+        numOfRatings: movie.listOfRatings.length,
+    }));
+    return movieRatedListWithCountedRatings;
 }
 
 export function theBestAndFamousMovies(
     movieSet: MovieType[],
 ): MovieRatingAndMostFamousType[] {
-    const movieWithAllMarks = computePopularMovies(movieSet);
-    const moviesAverageRatingList =
-        computeTheBestPopularMovies(movieWithAllMarks);
+    const moviesAverageRatingList = computeTheBestMovies(movieSet);
     return sortMovies(
         sortMovies(moviesAverageRatingList, theMostPopularMoviesPredicate),
         theBestMoviesPredicate,

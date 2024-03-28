@@ -5,7 +5,7 @@ import {
 } from '../src/computing/popularityOfMovies';
 import movies from '../mocks/movies.json';
 
-describe('Unit tests for mostFameousMovies util function', () => {
+describe('Unit tests for mostFameousMovies compute function', () => {
     it('should return sorted array of movies in descending order by num of ratings', () => {
         const result = mostFamousMovies(movies);
         expect(result).toMatchObject([
