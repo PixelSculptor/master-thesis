@@ -12,3 +12,8 @@ export type MovieMostFamousType = Pick<MovieType, 'movieId'> & {
 export type UserType = Pick<MovieType, 'userId'> & {
     numOfReviews: number;
 };
+
+export type MovieRatingType = Pick<MovieType, 'movieId'> & {
+    averageRating: number;
+    listOfRatings: number[];
+};
