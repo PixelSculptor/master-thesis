@@ -17,3 +17,6 @@ export type MovieRatingType = Pick<MovieType, 'movieId'> & {
     averageRating: number;
     listOfRatings: number[];
 };
+
+export type MovieRatingAndMostFamousType = MovieRatingType &
+    MovieMostFamousType;

@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
 import movies from '../mocks/movies.json';
-import { topRatedMovies, worstRatedMovies } from '../src/topRatedMovies';
+import {
+    topRatedMovies,
+    worstRatedMovies,
+} from '../src/computing/topRatedMovies';
 
 describe('Unit tests for counting top rated movies', () => {
     it('Should return list of movies sorted by the best average mark', () => {
@@ -72,6 +75,6 @@ describe('Unit tests for counting top rated movies', () => {
                 averageRating: 4.33,
                 listOfRatings: [5.0, 3.5, 4.5],
             },
-        ])
+        ]);
     });
 });

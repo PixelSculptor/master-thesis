@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
-import { mostActiveUsers, leastActiveUsers } from '../src/usersAcivity';
+import {
+    mostActiveUsers,
+    leastActiveUsers,
+} from '../src/computing/usersAcivity';
 import movies from '../mocks/movies.json';
 
 describe('Users Activity unit tests', () => {

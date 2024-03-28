@@ -1,4 +1,5 @@
-import { MovieType, MovieRatingType } from '../../types/MovieType';
+import { MovieType, MovieRatingType } from '../../../types/MovieType';
+import { roundToTwoDecimalPlaces } from '../utils/roundMarks';
 
 function gatherMarks(movieSet: MovieType[]): MovieRatingType[] {
     const movieAverageRating = movieSet.reduce((movieRatings, movie) => {
@@ -20,9 +21,6 @@ function gatherMarks(movieSet: MovieType[]): MovieRatingType[] {
 
     return movieAverageRating;
 }
-
-const roundToTwoDecimalPlaces = (mark: number) =>
-    Math.round((mark + Number.EPSILON) * 100) / 100;
 
 const topRatedMoviesAscending = (
     firstMovie: MovieRatingType,

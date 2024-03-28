@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { leastFamousMovies, mostFamousMovies } from '../src/popularityOfMovies';
+import {
+    leastFamousMovies,
+    mostFamousMovies,
+} from '../src/computing/popularityOfMovies';
 import movies from '../mocks/movies.json';
 
 describe('Unit tests for mostFameousMovies util function', () => {

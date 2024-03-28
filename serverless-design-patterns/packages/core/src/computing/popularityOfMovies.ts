@@ -1,4 +1,4 @@
-import { MovieMostFamousType, MovieType } from '../../types/MovieType';
+import { MovieMostFamousType, MovieType } from '../../../types/MovieType';
 
 function countNumOfRatings(movieSet: MovieType[]): MovieMostFamousType[] {
     const countRatings = movieSet.reduce((acc, { movieId }) => {

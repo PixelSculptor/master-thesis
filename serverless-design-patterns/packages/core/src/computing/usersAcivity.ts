@@ -1,4 +1,4 @@
-import { MovieType, UserType } from '../../types/MovieType';
+import { MovieType, UserType } from '../../../types/MovieType';
 
 function userActivity(movieSet: MovieType[]): UserType[] {
     const countActivity = movieSet.reduce((listOfActiveUsers, { userId }) => {
