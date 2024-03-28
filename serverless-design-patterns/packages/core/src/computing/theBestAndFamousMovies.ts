@@ -56,5 +56,5 @@ export function theBestAndFamousMovies(
     return sortMovies(
         sortMovies(moviesAverageRatingList, theMostPopularMoviesPredicate),
         theBestMoviesPredicate,
-    );
+    ).slice(0, 100);
 }
