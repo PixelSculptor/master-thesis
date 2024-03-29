@@ -13,6 +13,7 @@ export function StorageStack({ stack }: StackContext) {
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
     return {
-        table
+        table,
+        resourceBucket
     };
 }
