@@ -1,4 +1,4 @@
-import { StackContext, Table } from 'sst/constructs';
+import { Bucket, StackContext, Table } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
     const table = new Table(stack, 'FinishExecution', {
@@ -9,6 +9,8 @@ export function StorageStack({ stack }: StackContext) {
         },
         primaryIndex: { partitionKey: 'patternName', sortKey: 'counter' }
     });
+
+    const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
     return {
         table
