@@ -2,12 +2,12 @@ import { Api, StackContext, use } from 'sst/constructs';
 import { StorageStack } from './Storage.stack';
 
 export function ApiStack({ stack }: StackContext) {
-    const { table } = use(StorageStack);
+    const { table, resourceBucket, simpleComputing } = use(StorageStack);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
         defaults: {
             function: {
-                bind: [table]
+                bind: [table, resourceBucket, simpleComputing]
             }
         },
         routes: {

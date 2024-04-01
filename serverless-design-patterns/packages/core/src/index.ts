@@ -10,7 +10,7 @@ import {
     mostWorstRateMovieList
 } from './computing/theMostBestAndWorstMarks';
 
-export default {
+export default  {
     mostFamousMovies,
     leastFamousMovies,
     leastActiveUsers,

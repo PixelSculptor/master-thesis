@@ -20,7 +20,7 @@ export function StorageStack({ stack }: StackContext) {
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
             managedPolicies: [
                 iam.ManagedPolicy.fromAwsManagedPolicyName(
-                    'service-role/AmazonS3ObjectLambdaExecutionRolePolicy'
+                    'service-role/AWSLambdaBasicExecutionRole'
                 )
             ]
         }
@@ -29,7 +29,10 @@ export function StorageStack({ stack }: StackContext) {
     s3ManipulationRole.addToPolicy(
         new iam.PolicyStatement({
             actions: ['s3:*'],
-            resources: [`${resourceBucket.bucketArn}/*`]
+            resources: [
+                `${resourceBucket.bucketArn}`,
+                `${resourceBucket.bucketArn}/*`
+            ]
         })
     );
 
@@ -37,17 +40,6 @@ export function StorageStack({ stack }: StackContext) {
         handler: 'packages/functions/src/simpleComputing.main',
         role: s3ManipulationRole
     });
-
-    simpleComputing.attachPermissions([resourceBucket]);
-
-    // TODO: doesn't work
-    // simpleComputing.attachPermissions([
-    //     new iam.PolicyStatement({
-    //         actions: ['s3:GetObject', 's3:PutObject'],
-    //         effect: iam.Effect.ALLOW,
-    //         resources: [`${resourceBucket.bucketArn}/*`]
-    //     })
-    // ]);
 
     return {
         table,
