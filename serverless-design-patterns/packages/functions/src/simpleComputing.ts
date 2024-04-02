@@ -1,7 +1,10 @@
 import { S3 } from 'aws-sdk';
+import { Config } from 'sst/node/config';
+
 import handler from '../../core/src/handler';
-import { MovieType } from '../../types/MovieType';
 import metrics from '../../core/src/index';
+import { MovieType } from '../../types/MovieType';
+
 const s3 = new S3();
 
 export const main = handler(async (event) => {
@@ -21,7 +24,7 @@ export const main = handler(async (event) => {
         'J'
     ] as const;
     // TODO: Get bucket name from secrets
-    const bucketName = 'xxx';
+    const bucketName = Config.AWS_S3_MOVIEDATASET_BUCKET;
     const moviePromises = fileNames.map(async (filename) => {
         try {
             const data = await s3
