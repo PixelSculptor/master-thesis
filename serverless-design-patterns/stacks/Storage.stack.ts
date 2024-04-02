@@ -2,20 +2,20 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Bucket, Function, StackContext, Table } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
-    const table = new Table(stack, 'FinishExecution', {
+    const table = new Table(stack, 'FinishExecutionTable', {
         fields: {
             patternName: 'string',
             counter: 'number',
             timestamp: 'string'
         },
-        primaryIndex: { partitionKey: 'patternName', sortKey: 'counter' }
+        primaryIndex: { partitionKey: 'patternName' }
     });
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
-    const s3ManipulationRole = new iam.Role(
+    const lambdaResourceManipulationRole = new iam.Role(
         stack,
-        'LambdaS3ManipulationRole2',
+        'LambdaResourceManipulationRole',
         {
             assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
             managedPolicies: [
@@ -26,7 +26,7 @@ export function StorageStack({ stack }: StackContext) {
         }
     );
 
-    s3ManipulationRole.addToPolicy(
+    lambdaResourceManipulationRole.addToPolicy(
         new iam.PolicyStatement({
             actions: ['s3:*'],
             resources: [
@@ -36,9 +36,16 @@ export function StorageStack({ stack }: StackContext) {
         })
     );
 
+    lambdaResourceManipulationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['dynamodb:*'],
+            resources: [`${table.tableArn}`, `${table.tableArn}/*`]
+        })
+    );
+
     const simpleComputing = new Function(stack, 'SimpleComputing', {
         handler: 'packages/functions/src/simpleComputing.main',
-        role: s3ManipulationRole
+        role: lambdaResourceManipulationRole
     });
 
     return {

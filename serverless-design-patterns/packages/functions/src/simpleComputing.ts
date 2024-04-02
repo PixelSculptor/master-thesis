@@ -3,14 +3,14 @@ import { Config } from 'sst/node/config';
 
 import handler from '../../core/src/handler';
 import metrics from '../../core/src/index';
+import { putObjectToS3 } from './utils/putObjectToS3';
+import { updateCounterTable } from './utils/updateTable';
+
 import { MovieType } from '../../types/MovieType';
 
 const s3 = new S3();
 
 export const main = handler(async (event) => {
-    // Get Data from S3 in loop - done
-    // For each file in the bucket perform set of tasks - done
-    // After computing data on each file count up counter in DynamoDB
     const fileNames = [
         'A',
         'B',
@@ -23,8 +23,9 @@ export const main = handler(async (event) => {
         'I',
         'J'
     ] as const;
-    // TODO: Get bucket name from secrets
+
     const bucketName = Config.AWS_S3_MOVIEDATASET_BUCKET;
+
     const moviePromises = fileNames.map(async (filename) => {
         try {
             const data = await s3
@@ -34,7 +35,9 @@ export const main = handler(async (event) => {
                 })
                 .promise();
             if (data.Body === undefined) throw new Error('No data in file');
+
             const movies: MovieType[] = JSON.parse(data.Body.toString());
+
             const mostFamousMetric = metrics.mostFamousMovies(movies);
             const mostActiveUsersMetric = metrics.mostActiveUsers(movies);
             const topRatedMoviesMetric = metrics.topRatedMovies(movies);
@@ -47,33 +50,65 @@ export const main = handler(async (event) => {
             const leastActiveUsersMetric = metrics.leastActiveUsers(movies);
             const mostWorstRateMovieListMetric =
                 metrics.mostWorstRateMovieList(movies);
-            console.log('---------------------------------');
-            console.log(`Movies metrics by movies portal: ${filename}`);
-            console.log('Most Active users: ', mostActiveUsersMetric[0]);
-            console.log('Most Famous movies: ', mostFamousMetric[0]);
-            console.log('Top Rated movies: ', topRatedMoviesMetric[0]);
-            console.log('Worst Rated movies: ', worstRatedMoviesMetric[0]);
-            console.log(
-                'The Best And Famous movies: ',
-                theBestAndFamousMoviesMetric[0]
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/mostFamousMetric.json`,
+                mostFamousMetric
             );
-            console.log(
-                'Most Top Rate Movie List: ',
-                mostTopRateMovieListMetric[0]
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/mostActiveUsersMetric.json`,
+                mostActiveUsersMetric
             );
-            console.log(
-                'Most Worst Rate Movie List: ',
-                mostWorstRateMovieListMetric[0]
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/topRatedMoviesMetric.json`,
+                topRatedMoviesMetric
             );
-            console.log('Least Famous Movies: ', leastFamousMoviesMetric[0]);
-            console.log('Least Active Users: ', leastActiveUsersMetric[0]);
-            console.log('---------------------------------');
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/worstRatedMoviesMetric.json`,
+                worstRatedMoviesMetric
+            );
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/theBestAndFamousMoviesMetric.json`,
+                theBestAndFamousMoviesMetric
+            );
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/mostTopRateMovieListMetric.json`,
+                mostTopRateMovieListMetric
+            );
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/leastFamousMoviesMetric.json`,
+                leastFamousMoviesMetric
+            );
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/leastActiveUsersMetric.json`,
+                leastActiveUsersMetric
+            );
+
+            putObjectToS3(
+                `metrics/simpleComputingPattern/${filename}/mostWorstRateMovieListMetric.json`,
+                mostWorstRateMovieListMetric
+            );
+
+            updateCounterTable('simpleComputingPattern');
         } catch (error) {
             if (error instanceof Error) console.log(error.message);
         }
     });
-
-    await Promise.all(moviePromises);
-
-    return JSON.stringify({ message: 'End from simple computing pattern!' });
+    try {
+        await Promise.all(moviePromises);
+        console.log('All files are processed!');
+        return JSON.stringify({
+            message: 'End from simple computing pattern!'
+        });
+    } catch (error) {
+        console.log('Error while processing files:', error);
+        return JSON.stringify({ message: 'Error while processing files!' });
+    }
 });
