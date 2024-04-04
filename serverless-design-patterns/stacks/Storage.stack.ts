@@ -2,7 +2,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Bucket, Function, StackContext, Table } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
-    const table = new Table(stack, 'FinishExecutionTable', {
+    const table = new Table(stack, 'FinishExecution', {
         fields: {
             patternName: 'string',
             counter: 'number',
@@ -45,7 +45,9 @@ export function StorageStack({ stack }: StackContext) {
 
     const simpleComputing = new Function(stack, 'SimpleComputing', {
         handler: 'packages/functions/src/simpleComputing.main',
-        role: lambdaResourceManipulationRole
+        role: lambdaResourceManipulationRole,
+        timeout: 100,
+        memorySize: 256
     });
 
     return {
