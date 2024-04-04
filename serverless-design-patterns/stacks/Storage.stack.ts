@@ -13,6 +13,22 @@ export function StorageStack({ stack }: StackContext) {
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
+    const lambdaInvocationRole = new iam.Role(stack, 'LambdaInvocationRole', {
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        managedPolicies: [
+            iam.ManagedPolicy.fromAwsManagedPolicyName(
+                'service-role/AWSLambdaBasicExecutionRole'
+            )
+        ]
+    });
+
+    lambdaInvocationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['lambda:InvokeFunction'],
+            resources: ['*']
+        })
+    );
+
     const lambdaResourceManipulationRole = new iam.Role(
         stack,
         'LambdaResourceManipulationRole',
@@ -50,9 +66,17 @@ export function StorageStack({ stack }: StackContext) {
         memorySize: 256
     });
 
+    const basicFanout = new Function(stack, 'fanoutEntry', {
+        handler: 'packages/functions/src/fanoutEntry.main',
+        role: lambdaInvocationRole,
+        timeout: 10,
+        memorySize: 128
+    });
+
     return {
         table,
         resourceBucket,
-        simpleComputing
+        simpleComputing,
+        basicFanout
     };
 }

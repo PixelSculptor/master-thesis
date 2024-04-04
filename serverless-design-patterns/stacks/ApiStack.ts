@@ -2,7 +2,8 @@ import { Api, StackContext, use, Config } from 'sst/constructs';
 import { StorageStack } from './Storage.stack';
 
 export function ApiStack({ stack }: StackContext) {
-    const { table, resourceBucket, simpleComputing } = use(StorageStack);
+    const { table, resourceBucket, simpleComputing, basicFanout } =
+        use(StorageStack);
     const S3_MOVIESET_BUCKET = new Config.Secret(
         stack,
         'AWS_S3_MOVIEDATASET_BUCKET'
@@ -19,6 +20,7 @@ export function ApiStack({ stack }: StackContext) {
                     table,
                     resourceBucket,
                     simpleComputing,
+                    basicFanout,
                     S3_MOVIESET_BUCKET,
                     DYNAMODB_FINISH_EXECUTION_TABLE
                 ]
@@ -26,7 +28,8 @@ export function ApiStack({ stack }: StackContext) {
         },
         routes: {
             'GET /simpleComputing':
-                'packages/functions/src/simpleComputing.main'
+                'packages/functions/src/simpleComputing.main',
+            'GET /fanoutEntry': 'packages/functions/src/fanoutEntry.main'
         }
     });
 
