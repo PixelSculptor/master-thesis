@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import metrics from '../../core/src/index';
 import { fileNames, putObjectToS3 } from './utils/putObjectToS3';
 import { MovieType } from '../../types/MovieType';
+import { updateCounterTable } from './utils/updateTable';
 
 dotenv.config();
 const s3 = new S3();
@@ -32,6 +33,7 @@ export const handler: Handler = async (event) => {
             );
             if (response.code === 400 && response.error)
                 throw new Error(JSON.stringify(response));
+            await updateCounterTable(patternName);
             console.log(`Successfully processed movieSet: ${fileName}.json`);
         } catch (error) {
             console.error('Error processing movieSet: ', error);

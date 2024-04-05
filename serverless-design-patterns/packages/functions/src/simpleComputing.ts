@@ -1,7 +1,7 @@
 import { S3 } from 'aws-sdk';
 import dotenv from 'dotenv';
 
-import handler from '../../core/src/handler';
+import apiHandler from '../../core/src/apiHandler';
 import metrics from '../../core/src/index';
 import { putObjectToS3 } from './utils/putObjectToS3';
 import { updateCounterTable } from './utils/updateTable';
@@ -12,7 +12,7 @@ import { MovieType } from '../../types/MovieType';
 dotenv.config();
 const s3 = new S3();
 
-export const main = handler(async (event) => {
+export const main = apiHandler(async (event) => {
     const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
 
     const moviePromises = fileNames.map(async (filename) => {

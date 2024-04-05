@@ -18,14 +18,14 @@ export function ApiStack({ stack }: StackContext) {
                     resourceBucket,
                     simpleComputing,
                     basicFanout,
-                    mostFamousMovies,
+                    mostFamousMovies
                 ]
             }
         },
         routes: {
             'GET /simpleComputing':
                 'packages/functions/src/simpleComputing.main',
-            'GET /fanoutEntry': 'packages/functions/src/fanoutEntry.main'
+            'GET /fanoutBasic': 'packages/functions/src/fanoutEntry.main'
         }
     });
 

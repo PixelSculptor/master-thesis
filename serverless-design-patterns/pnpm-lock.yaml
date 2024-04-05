@@ -35,6 +35,9 @@ importers:
       aws-sdk:
         specifier: ^2.1589.0
         version: 2.1589.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       zod:
         specifier: ^3.22.4
         version: 3.22.4

@@ -1,8 +1,7 @@
 import { Lambda } from 'aws-sdk';
 import dotenv from 'dotenv';
-import { Config } from 'sst/node/config';
 
-import handler from '@serverless-design-patterns/core/handler';
+import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { LambdaPayload } from '../../types/ComputingTypes';
 
 dotenv.config();
@@ -11,8 +10,7 @@ const lambda = new Lambda({
     region: 'eu-central-1'
 });
 
-export const main = handler(async (event) => {
-    const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET;
+export const main = apiHandler(async (event) => {
 
     if (process.env.COMPUTING_LAMBDA_NAMES === undefined) {
         return JSON.stringify({
