@@ -22,13 +22,6 @@ export function StorageStack({ stack }: StackContext) {
         ]
     });
 
-    lambdaInvocationRole.addToPolicy(
-        new iam.PolicyStatement({
-            actions: ['lambda:InvokeFunction'],
-            resources: ['*']
-        })
-    );
-
     const lambdaResourceManipulationRole = new iam.Role(
         stack,
         'LambdaResourceManipulationRole',
@@ -66,17 +59,34 @@ export function StorageStack({ stack }: StackContext) {
         memorySize: 256
     });
 
+    const mostFamousMovies = new Function(stack, 'mostFamousMovies', {
+        handler: 'packages/functions/src/mostFamousMovies.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    lambdaInvocationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['lambda:InvokeFunction'],
+            resources: [mostFamousMovies.functionArn]
+        })
+    );
+
     const basicFanout = new Function(stack, 'fanoutEntry', {
         handler: 'packages/functions/src/fanoutEntry.main',
-        role: lambdaInvocationRole,
         timeout: 10,
-        memorySize: 128
+        memorySize: 256,
+        environment: {
+            COMPUTING_LAMBDA_NAMES: `${mostFamousMovies.functionName}`
+        }
     });
 
     return {
         table,
         resourceBucket,
         simpleComputing,
-        basicFanout
+        basicFanout,
+        mostFamousMovies
     };
 }

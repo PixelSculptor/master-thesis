@@ -2,8 +2,13 @@ import { Api, StackContext, use, Config } from 'sst/constructs';
 import { StorageStack } from './Storage.stack';
 
 export function ApiStack({ stack }: StackContext) {
-    const { table, resourceBucket, simpleComputing, basicFanout } =
-        use(StorageStack);
+    const {
+        table,
+        resourceBucket,
+        simpleComputing,
+        basicFanout,
+        mostFamousMovies
+    } = use(StorageStack);
     const S3_MOVIESET_BUCKET = new Config.Secret(
         stack,
         'AWS_S3_MOVIEDATASET_BUCKET'
@@ -21,6 +26,7 @@ export function ApiStack({ stack }: StackContext) {
                     resourceBucket,
                     simpleComputing,
                     basicFanout,
+                    mostFamousMovies,
                     S3_MOVIESET_BUCKET,
                     DYNAMODB_FINISH_EXECUTION_TABLE
                 ]

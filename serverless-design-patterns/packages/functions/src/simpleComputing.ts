@@ -5,25 +5,13 @@ import handler from '../../core/src/handler';
 import metrics from '../../core/src/index';
 import { putObjectToS3 } from './utils/putObjectToS3';
 import { updateCounterTable } from './utils/updateTable';
+import { fileNames } from './utils/putObjectToS3';
 
 import { MovieType } from '../../types/MovieType';
 
 const s3 = new S3();
 
 export const main = handler(async (event) => {
-    const fileNames = [
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
-        'F',
-        'G',
-        'H',
-        'I',
-        'J'
-    ] as const;
-
     const bucketName = Config.AWS_S3_MOVIEDATASET_BUCKET;
 
     const moviePromises = fileNames.map(async (filename) => {
