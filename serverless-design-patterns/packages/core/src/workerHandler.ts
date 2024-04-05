@@ -36,8 +36,9 @@ export default function workerHandler<T>(
                     `metrics/${patternName}/${fileName}/${metricName}.json`,
                     mostFamousMoviesMetric
                 );
-                if (response.code === 400 && response.error)
+                if (response.code === 400 && response.error) {
                     throw new Error(JSON.stringify(response));
+                }
                 await updateCounterTable(patternName);
                 console.log(
                     `Successfully processed movieSet: ${fileName}.json`

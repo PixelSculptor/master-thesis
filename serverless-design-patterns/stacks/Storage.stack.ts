@@ -66,6 +66,13 @@ export function StorageStack({ stack }: StackContext) {
         memorySize: 256
     });
 
+    const mostActiveUsers = new Function(stack, 'mostActiveUsers', {
+        handler: 'packages/functions/src/mostActiveUsers.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
     lambdaInvocationRole.addToPolicy(
         new iam.PolicyStatement({
             actions: ['lambda:InvokeFunction'],
@@ -85,6 +92,7 @@ export function StorageStack({ stack }: StackContext) {
         resourceBucket,
         simpleComputing,
         basicFanout,
-        mostFamousMovies
+        mostFamousMovies,
+        mostActiveUsers
     };
 }

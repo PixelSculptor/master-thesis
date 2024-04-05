@@ -7,7 +7,8 @@ export function ApiStack({ stack }: StackContext) {
         resourceBucket,
         simpleComputing,
         basicFanout,
-        mostFamousMovies
+        mostFamousMovies,
+        mostActiveUsers
     } = use(StorageStack);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
@@ -18,7 +19,8 @@ export function ApiStack({ stack }: StackContext) {
                     resourceBucket,
                     simpleComputing,
                     basicFanout,
-                    mostFamousMovies
+                    mostFamousMovies,
+                    mostActiveUsers
                 ]
             }
         },
