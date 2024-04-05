@@ -22,7 +22,7 @@ type LambdaMetadata = {
 const lambdaMetadataList: LambdaMetadata[] = (
     process.env.COMPUTING_LAMBDA_NAMES as string
 )
-    .split(',')
+    .split('\n')
     .map((lambdaName, index) => {
         return {
             lambdaName: lambdaName,

@@ -15,6 +15,7 @@ export const main = apiHandler(async (event) => {
             message: `No lambda names found `
         });
     }
+    console.log(lambdaMetadataList);
 
     const fanoutInvocations = lambdaMetadataList.map(
         async ({ lambdaName, metricName }) => {

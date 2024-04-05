@@ -40,9 +40,9 @@ export default function workerHandler<T>(
                     throw new Error(JSON.stringify(response));
                 }
                 await updateCounterTable(patternName);
-                console.log(
-                    `Successfully processed movieSet: ${fileName}.json`
-                );
+                // console.log(
+                // `Successfully processed movieSet: ${fileName}.json`
+                // );
             } catch (error) {
                 console.error('Error processing movieSet: ', error);
             }

@@ -8,7 +8,14 @@ export function ApiStack({ stack }: StackContext) {
         simpleComputing,
         basicFanout,
         mostFamousMovies,
-        mostActiveUsers
+        mostActiveUsers,
+        topRatedMovies,
+        worstRatedMovies,
+        theBestAndFamousMovies,
+        mostTopRateMovieList,
+        leastFamousMovies,
+        leastActiveUsers,
+        mostWorstRateMovieList
     } = use(StorageStack);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
@@ -20,7 +27,14 @@ export function ApiStack({ stack }: StackContext) {
                     simpleComputing,
                     basicFanout,
                     mostFamousMovies,
-                    mostActiveUsers
+                    mostActiveUsers,
+                    topRatedMovies,
+                    worstRatedMovies,
+                    theBestAndFamousMovies,
+                    mostTopRateMovieList,
+                    leastFamousMovies,
+                    leastActiveUsers,
+                    mostWorstRateMovieList
                 ]
             }
         },

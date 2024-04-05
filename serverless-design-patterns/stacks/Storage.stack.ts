@@ -73,6 +73,63 @@ export function StorageStack({ stack }: StackContext) {
         memorySize: 256
     });
 
+    const topRatedMovies = new Function(stack, 'topRatedMovies', {
+        handler: 'packages/functions/src/topRatedMovies.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    const worstRatedMovies = new Function(stack, 'worstRatedMovies', {
+        handler: 'packages/functions/src/worstRatedMovies.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    const theBestAndFamousMovies = new Function(
+        stack,
+        'theBestAndFamousMovies',
+        {
+            handler: 'packages/functions/src/theBestAndFamousMovies.handler',
+            timeout: 100,
+            role: lambdaResourceManipulationRole,
+            memorySize: 256
+        }
+    );
+
+    const mostTopRateMovieList = new Function(stack, 'mostTopRateMovieList', {
+        handler: 'packages/functions/src/mostTopRateMovieList.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    const leastFamousMovies = new Function(stack, 'leastFamousMovies', {
+        handler: 'packages/functions/src/leastFamousMovies.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    const leastActiveUsers = new Function(stack, 'leastActiveUsers', {
+        handler: 'packages/functions/src/leastActiveUsers.handler',
+        timeout: 100,
+        role: lambdaResourceManipulationRole,
+        memorySize: 256
+    });
+
+    const mostWorstRateMovieList = new Function(
+        stack,
+        'mostWorstRateMovieList',
+        {
+            handler: 'packages/functions/src/mostWorstRateMovieList.handler',
+            timeout: 100,
+            role: lambdaResourceManipulationRole,
+            memorySize: 256
+        }
+    );
+
     lambdaInvocationRole.addToPolicy(
         new iam.PolicyStatement({
             actions: ['lambda:InvokeFunction'],
@@ -93,6 +150,13 @@ export function StorageStack({ stack }: StackContext) {
         simpleComputing,
         basicFanout,
         mostFamousMovies,
-        mostActiveUsers
+        mostActiveUsers,
+        topRatedMovies,
+        worstRatedMovies,
+        theBestAndFamousMovies,
+        mostTopRateMovieList,
+        leastFamousMovies,
+        leastActiveUsers,
+        mostWorstRateMovieList
     };
 }
