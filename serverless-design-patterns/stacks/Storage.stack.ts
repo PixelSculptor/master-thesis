@@ -75,11 +75,9 @@ export function StorageStack({ stack }: StackContext) {
 
     const basicFanout = new Function(stack, 'fanoutEntry', {
         handler: 'packages/functions/src/fanoutEntry.main',
-        timeout: 10,
+        timeout: 60,
         memorySize: 256,
-        environment: {
-            COMPUTING_LAMBDA_NAMES: `${mostFamousMovies.functionName}`
-        }
+        role: lambdaInvocationRole
     });
 
     return {

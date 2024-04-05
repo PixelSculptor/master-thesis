@@ -1,5 +1,5 @@
 import { S3 } from 'aws-sdk';
-import { Config } from 'sst/node/config';
+import dotenv from 'dotenv';
 
 import handler from '../../core/src/handler';
 import metrics from '../../core/src/index';
@@ -9,10 +9,11 @@ import { fileNames } from './utils/putObjectToS3';
 
 import { MovieType } from '../../types/MovieType';
 
+dotenv.config();
 const s3 = new S3();
 
 export const main = handler(async (event) => {
-    const bucketName = Config.AWS_S3_MOVIEDATASET_BUCKET;
+    const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
 
     const moviePromises = fileNames.map(async (filename) => {
         try {
@@ -84,7 +85,8 @@ export const main = handler(async (event) => {
                 mostWorstRateMovieListMetric
             );
 
-            updateCounterTable('simpleComputingPattern');
+            await updateCounterTable('simpleComputingPattern');
+            console.log(`Finish processing ${filename}.json`);
         } catch (error) {
             if (error instanceof Error) console.log(error.message);
         }

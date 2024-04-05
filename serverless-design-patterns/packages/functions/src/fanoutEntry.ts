@@ -12,7 +12,7 @@ const lambda = new Lambda({
 });
 
 export const main = handler(async (event) => {
-    const bucketName: string = Config.AWS_S3_MOVIEDATASET_BUCKET;
+    const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET;
 
     if (process.env.COMPUTING_LAMBDA_NAMES === undefined) {
         return JSON.stringify({
@@ -27,11 +27,12 @@ export const main = handler(async (event) => {
                 const params: LambdaPayload = {
                     FunctionName: lambdaName,
                     InvocationType: 'Event',
-                    Payload: JSON.stringify({ metricName: 'mostFamousMoviesMetric', patternName: 'fanoutBasicPattern' })
+                    Payload: JSON.stringify({
+                        metricName: 'mostFamousMoviesMetric',
+                        patternName: 'fanoutBasicPattern'
+                    })
                 };
                 lambda.invoke(params).promise();
-                console.log(`Bucket name ${bucketName}`);
-                console.log(`Invoking lambda ${lambdaName}`);
                 resolve(true);
             } catch (error) {
                 reject(error);
