@@ -22,6 +22,9 @@ case $pattern in
     "simpleComputing")
         runProcessing "simpleComputing"
         ;;
+    "fanoutBasic")
+        runProcessing "fanoutBasic"
+        ;;
     *)
         echo "Invalid pattern name"
         ;;

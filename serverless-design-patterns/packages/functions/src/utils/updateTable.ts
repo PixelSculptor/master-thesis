@@ -1,15 +1,19 @@
 import AWS from 'aws-sdk';
 import moment from 'moment';
-import { Config } from 'sst/node/config';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-export async function updateCounterTable(patternName: string) {
+export async function updateCounterTable(
+    patternName: string
+): Promise<AWS.DynamoDB.UpdateItemOutput> {
     return new Promise(async (resolve, reject) => {
         try {
             const updateItemParams: AWS.DynamoDB.DocumentClient.UpdateItemInput =
                 {
-                    TableName: Config.AWS_DYNAMODB_FINISH_EXECUTION,
+                    TableName: process.env
+                        .AWS_DYNAMODB_FINISH_EXECUTION as string,
                     Key: {
                         patternName: patternName
                     },
@@ -27,7 +31,7 @@ export async function updateCounterTable(patternName: string) {
             const data = await dynamoDb.update(updateItemParams).promise();
             if (data.Attributes === undefined)
                 throw new Error('No data in file');
-            resolve(data.Attributes);
+            resolve(data);
         } catch (error) {
             reject(error);
         }
