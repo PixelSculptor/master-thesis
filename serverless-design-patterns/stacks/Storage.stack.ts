@@ -191,11 +191,6 @@ export function StorageStack({ stack }: StackContext) {
             'packages/functions/src/mostWorstRateMovieList.handler'
     });
 
-    // const lambdaFunctions = [mostActiveUsers, mostFamousMovies, topRatedMovies, worstRatedMovies, theBestAndFamousMovies, mostTopRateMovieList, leastFamousMovies, leastActiveUsers, mostWorstRateMovieList];
-
-    // lambdaFunctions.forEach((lambdaFunction) => {
-    //     computeMetricsTopic.attachPermissionsToSubscriber(lambdaFunction.functionName, ['s3', 'dynamodb'])
-    // })
     computeMetricsTopic.attachPermissionsToSubscriber('mostFamousMovies', [
         's3',
         'dynamodb'
