@@ -32,7 +32,7 @@ jobs:
         run: cd ./serverless-design-patterns/packages/core && pnpm run unitTest
 
       - name: Deploy Infrastructure 🚀
-        run: cd ./serverless-design-patterns && pnpm sst deploy
+        run: cd ./serverless-design-patterns && pnpm sst deploy --stage Kacper
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
