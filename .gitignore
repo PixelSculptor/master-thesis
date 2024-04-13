@@ -19,5 +19,3 @@ node_modules
 .env*.local
 .env
 
-# files in mocks folder
-mocks/

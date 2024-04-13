@@ -1,0 +1,63 @@
+[
+    {
+        "userId": "342",
+        "movieId": "534",
+        "rating": 3.0,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "531",
+        "movieId": "534",
+        "rating": 4.5,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "123",
+        "movieId": "534",
+        "rating": 2.0,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "531",
+        "movieId": "634",
+        "rating": 5.0,
+        "timestamp": "123456789"
+    },
+
+    {
+        "userId": "523",
+        "movieId": "634",
+        "rating": 3.5,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "146",
+        "movieId": "634",
+        "rating": 4.5,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "524",
+        "movieId": "124",
+        "rating": 2.5,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "123",
+        "movieId": "421",
+        "rating": 2.0,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "146",
+        "movieId": "234",
+        "rating": 3.0,
+        "timestamp": "123456789"
+    },
+    {
+        "userId": "146",
+        "movieId": "623",
+        "rating": 2.0,
+        "timestamp": "123456789"
+    }
+]
