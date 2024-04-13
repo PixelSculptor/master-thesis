@@ -32,7 +32,7 @@ jobs:
         run: cd ./serverless-design-patterns/packages/core && pnpm run unitTest
 
       - name: Install SST
-        run: cd ./serverless-design-patterns && pnpm install -g serverless-stack
+        run: cd ./serverless-design-patterns && pnpm install serverless-stack
 
       - name: Deploy Infrastructure 🚀
         run: cd ./serverless-design-patterns && pnpm sst deploy
