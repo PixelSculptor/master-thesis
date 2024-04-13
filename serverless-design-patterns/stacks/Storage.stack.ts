@@ -1,5 +1,5 @@
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { Bucket, Function, StackContext, Table } from 'sst/constructs';
+import { Bucket, Function, StackContext, Table, Topic } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
     const table = new Table(stack, 'FinishExecution', {
@@ -12,6 +12,24 @@ export function StorageStack({ stack }: StackContext) {
     });
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
+
+    const computeMetricsTopic = new Topic(stack, 'ComputeMetricsTopic');
+
+    const lambdaPublishingRole = new iam.Role(stack, 'LambdaPublishingRole', {
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        managedPolicies: [
+            iam.ManagedPolicy.fromAwsManagedPolicyName(
+                'service-role/AWSLambdaBasicExecutionRole'
+            )
+        ]
+    });
+
+    lambdaPublishingRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['sns:Publish'],
+            resources: [computeMetricsTopic.topicArn]
+        })
+    );
 
     const lambdaInvocationRole = new iam.Role(stack, 'LambdaInvocationRole', {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -49,6 +67,13 @@ export function StorageStack({ stack }: StackContext) {
         new iam.PolicyStatement({
             actions: ['dynamodb:*'],
             resources: [`${table.tableArn}`, `${table.tableArn}/*`]
+        })
+    );
+
+    lambdaResourceManipulationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['sns:Subscribe'],
+            resources: [computeMetricsTopic.topicArn]
         })
     );
 
@@ -144,6 +169,71 @@ export function StorageStack({ stack }: StackContext) {
         role: lambdaInvocationRole
     });
 
+    const fanoutWithSNS = new Function(stack, 'PublishMessageToStartCompute', {
+        handler: 'packages/functions/src/publishMessageStartComputing.main',
+        timeout: 10,
+        memorySize: 128,
+        role: lambdaPublishingRole
+    });
+
+    computeMetricsTopic.addSubscribers(stack, {
+        mostFamousMovies: 'packages/functions/src/mostFamousMovies.handler',
+        mostActiveUsers: 'packages/functions/src/mostActiveUsers.handler',
+        topRatedMovies: 'packages/functions/src/topRatedMovies.handler',
+        worstRatedMovies: 'packages/functions/src/worstRatedMovies.handler',
+        theBestAndFamousMovies:
+            'packages/functions/src/theBestAndFamousMovies.handler',
+        mostTopRateMovieList:
+            'packages/functions/src/mostTopRateMovieList.handler',
+        leastFamousMovies: 'packages/functions/src/leastFamousMovies.handler',
+        leastActiveUsers: 'packages/functions/src/leastActiveUsers.handler',
+        mostWorstRateMovieList:
+            'packages/functions/src/mostWorstRateMovieList.handler'
+    });
+
+    computeMetricsTopic.attachPermissionsToSubscriber('mostFamousMovies', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber('mostActiveUsers', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber('topRatedMovies', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber('worstRatedMovies', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber(
+        'theBestAndFamousMovies',
+        ['s3', 'dynamodb']
+    );
+    computeMetricsTopic.attachPermissionsToSubscriber('mostTopRateMovieList', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber('leastFamousMovies', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber('leastActiveUsers', [
+        's3',
+        'dynamodb'
+    ]);
+    computeMetricsTopic.attachPermissionsToSubscriber(
+        'mostWorstRateMovieList',
+        ['s3', 'dynamodb']
+    );
+
+    stack.addOutputs({
+        Topic: computeMetricsTopic.topicName,
+        Bucket: resourceBucket.bucketName,
+        Table: table.tableName
+    });
+
     return {
         table,
         resourceBucket,
@@ -157,6 +247,8 @@ export function StorageStack({ stack }: StackContext) {
         mostTopRateMovieList,
         leastFamousMovies,
         leastActiveUsers,
-        mostWorstRateMovieList
+        mostWorstRateMovieList,
+        fanoutWithSNS,
+        computeMetricsTopic
     };
 }

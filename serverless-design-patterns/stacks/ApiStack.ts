@@ -15,7 +15,9 @@ export function ApiStack({ stack }: StackContext) {
         mostTopRateMovieList,
         leastFamousMovies,
         leastActiveUsers,
-        mostWorstRateMovieList
+        mostWorstRateMovieList,
+        fanoutWithSNS,
+        computeMetricsTopic
     } = use(StorageStack);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
@@ -34,14 +36,18 @@ export function ApiStack({ stack }: StackContext) {
                     mostTopRateMovieList,
                     leastFamousMovies,
                     leastActiveUsers,
-                    mostWorstRateMovieList
+                    mostWorstRateMovieList,
+                    fanoutWithSNS,
+                    computeMetricsTopic
                 ]
             }
         },
         routes: {
             'GET /simpleComputing':
                 'packages/functions/src/simpleComputing.main',
-            'GET /fanoutBasic': 'packages/functions/src/fanoutEntry.main'
+            'GET /fanoutBasic': 'packages/functions/src/fanoutEntry.main',
+            'GET /fanoutWithSNS':
+                'packages/functions/src/publishMessageStartComputing.main'
         }
     });
 
