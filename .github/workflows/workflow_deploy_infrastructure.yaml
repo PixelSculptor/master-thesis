@@ -1,6 +1,7 @@
 name: CI/CD Deploy Infrastructure Workflow 🚀🚀🚀
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
