@@ -23,10 +23,10 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies 📥
-        run: pnpm install
+        run: cd ./serverless-desgin-patterns && pnpm install
 
       - name: Compile Typescript 🛠️
-        run: pnpm run build
+        run: cd ./serverless-desgin-patterns && pnpm run build
 
       - name: Run tests 🧪
         run: cd packages/core && pnpm run unitTest
