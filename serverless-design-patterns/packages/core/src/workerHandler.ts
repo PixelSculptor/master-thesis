@@ -6,12 +6,8 @@ import {
     fileNames,
     putObjectToS3
 } from '../../functions/src/utils/putObjectToS3';
-import { updateCounterTable } from '../../functions/src/utils/updateTable';
+import { addComputeLogToDB } from '../../functions/src/utils/addComputeLogToDB';
 import { MovieType } from '../../types/MovieType';
-
-type SNSMessage = {
-    patternName: string;
-};
 
 dotenv.config();
 const s3 = new S3();
@@ -22,13 +18,15 @@ export default function workerHandler<T>(
 ): Handler {
     return async (event) => {
         let patternName = '';
+        const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
         const SNSPayload = JSON.parse(event.Records[0].Sns.Message);
+
         if (event.patternName) {
-            // const { metricName, patternName } = event;
             patternName = event.patternName;
         } else if (SNSPayload && 'patternName' in SNSPayload) {
             patternName = SNSPayload.patternName;
         }
+
         console.log(patternName, metricName);
         const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
         const moviePromises = fileNames.map(async (fileName) => {
@@ -52,10 +50,8 @@ export default function workerHandler<T>(
                 if (response.code === 400 && response.error) {
                     throw new Error(JSON.stringify(response));
                 }
-                await updateCounterTable(patternName);
-                // console.log(
-                // `Successfully processed movieSet: ${fileName}.json`
-                // );
+
+                await addComputeLogToDB(patternName, numOfTry, metricName);
             } catch (error) {
                 console.error('Error processing movieSet: ', error);
             }

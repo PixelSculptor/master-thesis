@@ -13,7 +13,7 @@ runProcessing(){
     for i in {1..10}
     do
         echo "Request $i"
-        curl -X GET $API_ENDPOINT
+        curl -X GET $API_ENDPOINT?tryNumber=$i
     done
 }
 
