@@ -1,0 +1,37 @@
+name: Pull Request test 🧪🧪🧪
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 📦
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies 📥
+        run: |
+          cd ./serverless-design-patterns
+          pnpm install
+
+      - name: Compile Typescript 🛠️
+        run: |
+          cd ./serverless-design-patterns
+          pnpm build
+
+      - name: Run tests 🧪
+        run: |
+          cd ./serverless-design-patterns/packages/core
+          pnpm test
