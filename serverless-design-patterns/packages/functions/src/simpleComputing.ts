@@ -15,6 +15,7 @@ import {
 } from '../../core/src/index';
 import { putObjectToS3 } from './utils/putObjectToS3';
 import { updateCounterTable } from './utils/updateTable';
+import { addComputeLogToDB } from './utils/addComputeLogToDB';
 import { fileNames } from './utils/putObjectToS3';
 
 import { MovieType } from '../../types/MovieType';
@@ -24,6 +25,7 @@ const s3 = new S3();
 
 export const main = apiHandler(async (event) => {
     const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
+    const numberOfTry = event.queryStringParameters?.tryNumber ?? '1';
 
     const moviePromises = fileNames.map(async (filename) => {
         try {
@@ -92,7 +94,11 @@ export const main = apiHandler(async (event) => {
                 mostWorstRateMovieListMetric
             );
 
-            await updateCounterTable('simpleComputingPattern');
+            await addComputeLogToDB(
+                'simpleComputingPattern',
+                numberOfTry,
+                `allMetrics/${filename}`
+            );
             console.log(`Finish processing ${filename}.json`);
         } catch (error) {
             if (error instanceof Error) console.log(error.message);

@@ -2,13 +2,14 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import { Bucket, Function, StackContext, Table, Topic } from 'sst/constructs';
 
 export function StorageStack({ stack }: StackContext) {
-    const table = new Table(stack, 'FinishExecution', {
+    const table = new Table(stack, 'FinishExecutionTable', {
         fields: {
             patternName: 'string',
-            counter: 'number',
+            numberOfTry: 'string',
+            metricName: 'string',
             timestamp: 'string'
         },
-        primaryIndex: { partitionKey: 'patternName' }
+        primaryIndex: { partitionKey: 'patternName', sortKey: 'timestamp' }
     });
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');

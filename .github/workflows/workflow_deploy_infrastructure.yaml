@@ -22,6 +22,13 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
 
+      - name: Configure AWS Credentials 🗝
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
       - name: Install dependencies 📥
         run: cd ./serverless-design-patterns && pnpm install
 
@@ -33,7 +40,3 @@ jobs:
 
       - name: Deploy Infrastructure 🚀
         run: cd ./serverless-design-patterns && pnpm sst deploy --stage Kacper
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: eu-central-1
