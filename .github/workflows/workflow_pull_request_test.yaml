@@ -8,8 +8,6 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
-    env:
-      STAGE: Kacper
 
     steps:
       - name: Checkout 🛎️
@@ -19,6 +17,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{secretes.AWS_SECRET_ACCESS_KEY}}
+          aws-region: eu-central-1
 
       - name: Install pnpm
         run: npm install -g pnpm
@@ -36,4 +41,5 @@ jobs:
       - name: Run tests 🧪
         run: |
           cd ./serverless-design-patterns
+          export STAGE=Kacper
           pnpm test
