@@ -8,6 +8,8 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
+    env:
+      STAGE: ${{ env.STAGE }}
 
     steps:
       - name: Checkout 🛎️
@@ -41,5 +43,4 @@ jobs:
       - name: Run tests 🧪
         run: |
           cd ./serverless-design-patterns
-          export STAGE=Kacper
           pnpm test
