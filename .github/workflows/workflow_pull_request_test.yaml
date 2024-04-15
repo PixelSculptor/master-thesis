@@ -34,4 +34,4 @@ jobs:
       - name: Run tests 🧪
         run: |
           cd ./serverless-design-patterns/packages/core
-          pnpm test
+          pnpm test --stage Kacper
