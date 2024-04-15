@@ -35,4 +35,4 @@ jobs:
         run: |
           cd ./serverless-design-patterns
           export AWS_PROFILE=Kacper
-          pnpm test
+          pnpm test --stage Kacper
