@@ -8,8 +8,6 @@ on:
 jobs:
   test_pull_request:
     runs-on: ubuntu-latest
-    env:
-      STAGE: ${{ env.STAGE }}
 
     steps:
       - name: Checkout 🛎️
@@ -44,3 +42,5 @@ jobs:
         run: |
           cd ./serverless-design-patterns
           pnpm test
+        env:
+          STAGE: ${{ env.STAGE }}
