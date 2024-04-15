@@ -34,4 +34,5 @@ jobs:
       - name: Run tests 🧪
         run: |
           cd ./serverless-design-patterns/packages/core
-          pnpm test --stage Kacper
+          export AWS_PROFILE=Kacper
+          pnpm test
