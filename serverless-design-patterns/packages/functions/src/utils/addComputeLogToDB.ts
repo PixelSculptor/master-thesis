@@ -1,8 +1,10 @@
 import AWS from 'aws-sdk';
 import moment from 'moment';
-import dotenv from 'dotenv';
+import { Config } from 'sst/node/config';
 
-dotenv.config();
+// TODO: Delete this import after research
+// import dotenv from 'dotenv';
+// dotenv.config();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 export async function addComputeLogToDB(
@@ -13,7 +15,7 @@ export async function addComputeLogToDB(
     return new Promise(async (resolve, reject) => {
         try {
             const putItemParams: AWS.DynamoDB.DocumentClient.Put = {
-                TableName: process.env.AWS_DYNAMODB_FINISH_EXECUTION as string,
+                TableName: Config.AWS_DYNAMODB_FINISH_EXECUTION as string,
                 Item: {
                     patternName: patternName,
                     numberOfTry: numberOfTry,

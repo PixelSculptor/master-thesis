@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import { Handler } from 'aws-lambda';
 import { S3 } from 'aws-sdk';
 
@@ -8,8 +7,9 @@ import {
 } from '../../functions/src/utils/putObjectToS3';
 import { addComputeLogToDB } from '../../functions/src/utils/addComputeLogToDB';
 import { MovieType } from '../../types/MovieType';
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-dotenv.config();
 const s3 = new S3();
 
 export default function workerHandler<T>(
@@ -18,17 +18,26 @@ export default function workerHandler<T>(
 ): Handler {
     return async (event) => {
         let patternName = '';
+        let bucketName = '';
+        let SNSPayload;
         const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
-        const SNSPayload = JSON.parse(event.Records[0].Sns.Message);
 
-        if (event.patternName) {
-            patternName = event.patternName;
-        } else if (SNSPayload && 'patternName' in SNSPayload) {
-            patternName = SNSPayload.patternName;
+        if (event.Records && event.Records.length > 0) {
+            SNSPayload = JSON.parse(event?.Records[0].Sns.Message);
         }
 
-        console.log(patternName, metricName);
-        const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
+        if (event.patternName && event.bucketName) {
+            patternName = event.patternName;
+            bucketName = event.bucketName;
+        } else if (
+            SNSPayload &&
+            'patternName' in SNSPayload &&
+            'bucketName' in SNSPayload
+        ) {
+            patternName = SNSPayload.patternName;
+            bucketName = SNSPayload.bucketName;
+        }
+
         const moviePromises = fileNames.map(async (fileName) => {
             try {
                 const data = await s3
@@ -37,8 +46,8 @@ export default function workerHandler<T>(
                         Key: `${fileName}.json`
                     })
                     .promise();
-
                 if (data.Body === undefined) throw new Error('No data in file');
+
                 const movies: MovieType[] = JSON.parse(data.Body.toString());
 
                 const mostFamousMoviesMetric = metricWorker(movies);
@@ -51,7 +60,11 @@ export default function workerHandler<T>(
                     throw new Error(JSON.stringify(response));
                 }
 
-                await addComputeLogToDB(patternName, numOfTry, metricName);
+                await addComputeLogToDB(
+                    patternName,
+                    numOfTry,
+                    `${fileName}/${metricName}`
+                );
             } catch (error) {
                 console.error('Error processing movieSet: ', error);
             }

@@ -1,7 +1,5 @@
 import AWS from 'aws-sdk';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { Config } from 'sst/node/config';
 
 type PutObjectToS3Response = {
     code: 201 | 400;
@@ -18,7 +16,7 @@ export async function putObjectToS3<T>(
         try {
             const passedData = await s3
                 .putObject({
-                    Bucket: process.env.AWS_S3_MOVIEDATASET_BUCKET as string,
+                    Bucket: Config.AWS_S3_MOVIEDATASET_BUCKET as string,
                     Key: path,
                     Body: JSON.stringify(body)
                 })

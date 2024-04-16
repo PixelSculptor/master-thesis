@@ -1,8 +1,8 @@
 import { Lambda } from 'aws-sdk';
+import { Config } from 'sst/node/config';
 
 import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { LambdaPayload } from '../../types/ComputingTypes';
-
 import lambdaMetadataList from './utils/lambdaMetadataList';
 
 const lambda = new Lambda({
@@ -10,13 +10,6 @@ const lambda = new Lambda({
 });
 
 export const main = apiHandler(async (event) => {
-    if (process.env.COMPUTING_LAMBDA_NAMES === undefined) {
-        return JSON.stringify({
-            message: `No lambda names found `
-        });
-    }
-    console.log(lambdaMetadataList);
-
     const fanoutInvocations = lambdaMetadataList.map(
         async ({ lambdaName, metricName }) => {
             return new Promise(async (resolve, reject) => {
@@ -26,11 +19,12 @@ export const main = apiHandler(async (event) => {
                         InvocationType: 'Event',
                         Payload: JSON.stringify({
                             metricName: metricName,
-                            patternName: 'fanoutBasicPattern'
+                            patternName: 'fanoutBasicPattern',
+                            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET
                         })
                     };
                     console.log(`Invoking lambda: ${lambdaName}`);
-                    lambda.invoke(params).promise();
+                    await lambda.invoke(params).promise();
                     resolve(true);
                 } catch (error) {
                     reject(error);
