@@ -9,6 +9,11 @@ import { PublishInput } from 'aws-sdk/clients/sns';
 const sns = new AWS.SNS();
 
 export const main = apiHandler(async (event) => {
+    if (Config.AWS_S3_MOVIEDATASET_BUCKET === undefined) {
+        return JSON.stringify({
+            message: 'Error: AWS_S3_MOVIEDATASET_BUCKET is not defined'
+        });
+    }
     const params: PublishInput = {
         Message: JSON.stringify({
             patternName: 'fanoutWithSNSPattern',

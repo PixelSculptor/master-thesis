@@ -10,6 +10,11 @@ const lambda = new Lambda({
 });
 
 export const main = apiHandler(async (event) => {
+    if (Config.AWS_S3_MOVIEDATASET_BUCKET === undefined) {
+        return JSON.stringify({
+            message: 'Error: AWS_S3_MOVIEDATASET_BUCKET is not defined'
+        });
+    }
     const fanoutInvocations = lambdaMetadataList.map(
         async ({ lambdaName, metricName }) => {
             return new Promise(async (resolve, reject) => {
