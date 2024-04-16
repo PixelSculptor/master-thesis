@@ -1,6 +1,7 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { Config } from 'sst/node/config';
+// TODO: Delete this import after research
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const movieMetrics = [
     'mostFamous',
@@ -20,9 +21,9 @@ type LambdaMetadata = {
 };
 
 const lambdaMetadataList: LambdaMetadata[] = (
-    process.env.COMPUTING_LAMBDA_NAMES as string
+    Config.COMPUTING_LAMBDA_NAMES as string
 )
-    .split('\n')
+    .split(',')
     .map((lambdaName, index) => {
         return {
             lambdaName: lambdaName,

@@ -1,5 +1,4 @@
 import { S3 } from 'aws-sdk';
-import dotenv from 'dotenv';
 
 import apiHandler from '../../core/src/apiHandler';
 import {
@@ -14,19 +13,17 @@ import {
     mostWorstRateMovieList
 } from '../../core/src/index';
 import { putObjectToS3 } from './utils/putObjectToS3';
-import { updateCounterTable } from './utils/updateTable';
 import { addComputeLogToDB } from './utils/addComputeLogToDB';
 import { fileNames } from './utils/putObjectToS3';
 
 import { MovieType } from '../../types/MovieType';
+import { Config } from 'sst/node/config';
 
-dotenv.config();
 const s3 = new S3();
 
 export const main = apiHandler(async (event) => {
-    const bucketName = process.env.AWS_S3_MOVIEDATASET_BUCKET as string;
+    const bucketName = Config.AWS_S3_MOVIEDATASET_BUCKET as string;
     const numberOfTry = event.queryStringParameters?.tryNumber ?? '1';
-
     const moviePromises = fileNames.map(async (filename) => {
         try {
             const data = await s3
@@ -40,6 +37,7 @@ export const main = apiHandler(async (event) => {
             const movies: MovieType[] = JSON.parse(data.Body.toString());
 
             const mostFamousMetric = mostFamousMovies(movies);
+            console.log(`file: ${filename} len : `, mostFamousMetric.length);
             const mostActiveUsersMetric = mostActiveUsers(movies);
             const topRatedMoviesMetric = topRatedMovies(movies);
             const worstRatedMoviesMetric = worstRatedMovies(movies);
@@ -49,47 +47,47 @@ export const main = apiHandler(async (event) => {
             const leastActiveUsersMetric = leastActiveUsers(movies);
             const mostWorstRateMovieListMetric = mostWorstRateMovieList(movies);
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/mostFamousMetric.json`,
                 mostFamousMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/mostActiveUsersMetric.json`,
                 mostActiveUsersMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/topRatedMoviesMetric.json`,
                 topRatedMoviesMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/worstRatedMoviesMetric.json`,
                 worstRatedMoviesMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/theBestAndFamousMoviesMetric.json`,
                 theBestAndFamousMoviesMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/mostTopRateMovieListMetric.json`,
                 mostTopRateMovieListMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/leastFamousMoviesMetric.json`,
                 leastFamousMoviesMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/leastActiveUsersMetric.json`,
                 leastActiveUsersMetric
             );
 
-            putObjectToS3(
+            await putObjectToS3(
                 `metrics/simpleComputingPattern/${filename}/mostWorstRateMovieListMetric.json`,
                 mostWorstRateMovieListMetric
             );

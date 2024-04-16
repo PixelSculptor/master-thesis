@@ -14,7 +14,14 @@ export function StorageStack({ stack }: StackContext) {
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
-    const computeMetricsTopic = new Topic(stack, 'ComputeMetricsTopic');
+    const computeMetricsTopic = new Topic(stack, 'ComputeMetricsTopic', {
+        defaults: {
+            function: {
+                memorySize: 1024,
+                timeout: 200
+            }
+        }
+    });
 
     const lambdaPublishingRole = new iam.Role(stack, 'LambdaPublishingRole', {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -81,36 +88,36 @@ export function StorageStack({ stack }: StackContext) {
     const simpleComputing = new Function(stack, 'SimpleComputing', {
         handler: 'packages/functions/src/simpleComputing.main',
         role: lambdaResourceManipulationRole,
-        timeout: 100,
-        memorySize: 256
+        timeout: 600,
+        memorySize: `2048 MB`
     });
 
     const mostFamousMovies = new Function(stack, 'mostFamousMovies', {
         handler: 'packages/functions/src/mostFamousMovies.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const mostActiveUsers = new Function(stack, 'mostActiveUsers', {
         handler: 'packages/functions/src/mostActiveUsers.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const topRatedMovies = new Function(stack, 'topRatedMovies', {
         handler: 'packages/functions/src/topRatedMovies.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const worstRatedMovies = new Function(stack, 'worstRatedMovies', {
         handler: 'packages/functions/src/worstRatedMovies.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const theBestAndFamousMovies = new Function(
@@ -120,7 +127,7 @@ export function StorageStack({ stack }: StackContext) {
             handler: 'packages/functions/src/theBestAndFamousMovies.handler',
             timeout: 100,
             role: lambdaResourceManipulationRole,
-            memorySize: 256
+            memorySize: 1024
         }
     );
 
@@ -128,21 +135,21 @@ export function StorageStack({ stack }: StackContext) {
         handler: 'packages/functions/src/mostTopRateMovieList.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const leastFamousMovies = new Function(stack, 'leastFamousMovies', {
         handler: 'packages/functions/src/leastFamousMovies.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const leastActiveUsers = new Function(stack, 'leastActiveUsers', {
         handler: 'packages/functions/src/leastActiveUsers.handler',
         timeout: 100,
         role: lambdaResourceManipulationRole,
-        memorySize: 256
+        memorySize: 1024
     });
 
     const mostWorstRateMovieList = new Function(
@@ -152,7 +159,7 @@ export function StorageStack({ stack }: StackContext) {
             handler: 'packages/functions/src/mostWorstRateMovieList.handler',
             timeout: 100,
             role: lambdaResourceManipulationRole,
-            memorySize: 256
+            memorySize: 1024
         }
     );
 

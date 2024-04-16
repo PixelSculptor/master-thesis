@@ -1,18 +1,25 @@
 import * as AWS from 'aws-sdk';
-import dotenv from 'dotenv';
+import { Config } from 'sst/node/config';
 import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { PublishInput } from 'aws-sdk/clients/sns';
-
-dotenv.config();
+// TODO: Delete this import after research
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const sns = new AWS.SNS();
 
 export const main = apiHandler(async (event) => {
-    // publish pattern name through SNS
-    // add parameter for lambda with name of metric
+    if (Config.AWS_S3_MOVIEDATASET_BUCKET === undefined) {
+        return JSON.stringify({
+            message: 'Error: AWS_S3_MOVIEDATASET_BUCKET is not defined'
+        });
+    }
     const params: PublishInput = {
-        Message: JSON.stringify({ patternName: 'fanoutWithSNSPattern' }),
-        TopicArn: process.env.AWS_SNS_TOPIC
+        Message: JSON.stringify({
+            patternName: 'fanoutWithSNSPattern',
+            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET
+        }),
+        TopicArn: Config.AWS_SNS_TOPIC
     };
 
     await sns.publish(params).promise();
