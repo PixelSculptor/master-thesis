@@ -57,12 +57,13 @@ export function ApiStack({ stack }: StackContext) {
     mostTopRateMovieList.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     leastFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     leastActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    mostWorstRateMovieList.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
         defaults: {
             function: {
-                memorySize: 1024,
-                timeout: 200,
+                memorySize: 256,
+                timeout: 100,
                 bind: [
                     table,
                     resourceBucket,

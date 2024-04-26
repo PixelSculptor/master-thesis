@@ -7,8 +7,6 @@ import {
 } from '../../functions/src/utils/putObjectToS3';
 import { addComputeLogToDB } from '../../functions/src/utils/addComputeLogToDB';
 import { MovieType } from '../../types/MovieType';
-// import dotenv from 'dotenv';
-// dotenv.config();
 
 const s3 = new S3();
 
@@ -19,23 +17,26 @@ export default function workerHandler<T>(
     return async (event) => {
         let patternName = '';
         let bucketName = '';
+        let numOfTry = '';
         let SNSPayload;
-        const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
 
         if (event.Records && event.Records.length > 0) {
             SNSPayload = JSON.parse(event?.Records[0].Sns.Message);
         }
 
-        if (event.patternName && event.bucketName) {
+        if (event.patternName && event.bucketName && event.tryNumber) {
             patternName = event.patternName;
             bucketName = event.bucketName;
+            numOfTry = event.tryNumber;
         } else if (
             SNSPayload &&
             'patternName' in SNSPayload &&
-            'bucketName' in SNSPayload
+            'bucketName' in SNSPayload &&
+            'tryNumber' in SNSPayload
         ) {
             patternName = SNSPayload.patternName;
             bucketName = SNSPayload.bucketName;
+            numOfTry = SNSPayload.tryNumber;
         }
 
         const moviePromises = fileNames.map(async (fileName) => {

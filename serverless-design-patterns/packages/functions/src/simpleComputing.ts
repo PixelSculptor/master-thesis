@@ -37,7 +37,6 @@ export const main = apiHandler(async (event) => {
             const movies: MovieType[] = JSON.parse(data.Body.toString());
 
             const mostFamousMetric = mostFamousMovies(movies);
-            console.log(`file: ${filename} len : `, mostFamousMetric.length);
             const mostActiveUsersMetric = mostActiveUsers(movies);
             const topRatedMoviesMetric = topRatedMovies(movies);
             const worstRatedMoviesMetric = worstRatedMovies(movies);

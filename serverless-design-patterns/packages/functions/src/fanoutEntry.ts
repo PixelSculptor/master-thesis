@@ -25,7 +25,9 @@ export const main = apiHandler(async (event) => {
                         Payload: JSON.stringify({
                             metricName: metricName,
                             patternName: 'fanoutBasicPattern',
-                            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET
+                            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET,
+                            tryNumber:
+                                event.queryStringParameters?.tryNumber ?? '1'
                         })
                     };
                     console.log(`Invoking lambda: ${lambdaName}`);
