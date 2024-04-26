@@ -13,7 +13,15 @@ runProcessing(){
     for i in {1..10}
     do
         echo "Request $i"
-        curl -X GET $API_ENDPOINT?tryNumber=$i
+
+        curl -X GET "$API_ENDPOINT?tryNumber=$i"
+
+        sleep 80
+
+        echo "Deploying changes"
+        pnpm sst deploy
+
+        sleep 250
     done
 }
 

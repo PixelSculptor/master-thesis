@@ -2,9 +2,6 @@ import AWS from 'aws-sdk';
 import moment from 'moment';
 import { Config } from 'sst/node/config';
 
-// TODO: Delete this import after research
-// import dotenv from 'dotenv';
-// dotenv.config();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 export async function addComputeLogToDB(

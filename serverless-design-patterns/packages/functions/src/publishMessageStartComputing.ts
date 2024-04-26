@@ -2,9 +2,6 @@ import * as AWS from 'aws-sdk';
 import { Config } from 'sst/node/config';
 import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { PublishInput } from 'aws-sdk/clients/sns';
-// TODO: Delete this import after research
-// import dotenv from 'dotenv';
-// dotenv.config();
 
 const sns = new AWS.SNS();
 
@@ -17,7 +14,8 @@ export const main = apiHandler(async (event) => {
     const params: PublishInput = {
         Message: JSON.stringify({
             patternName: 'fanoutWithSNSPattern',
-            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET
+            bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET,
+            tryNumber: event.queryStringParameters?.tryNumber ?? '1'
         }),
         TopicArn: Config.AWS_SNS_TOPIC
     };
