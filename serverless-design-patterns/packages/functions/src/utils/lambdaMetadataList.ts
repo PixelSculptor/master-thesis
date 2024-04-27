@@ -1,7 +1,4 @@
 import { Config } from 'sst/node/config';
-// TODO: Delete this import after research
-// import dotenv from 'dotenv';
-// dotenv.config();
 
 const movieMetrics = [
     'mostFamous',

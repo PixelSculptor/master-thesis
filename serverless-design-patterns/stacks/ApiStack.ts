@@ -17,7 +17,17 @@ export function ApiStack({ stack }: StackContext) {
         leastActiveUsers,
         mostWorstRateMovieList,
         fanoutWithSNS,
-        computeMetricsTopic
+        computeMetricsTopic,
+        fanoutSNSandSQS,
+        mostActiveUsersTopic,
+        mostFamousMoviesTopic,
+        topRatedMoviesTopic,
+        worstRatedMoviesTopic,
+        theBestAndFamousMoviesTopic,
+        mostTopRateMovieListTopic,
+        leastFamousMoviesTopic,
+        leastActiveUsersTopic,
+        mostWorstRateMovieListTopic
     } = use(StorageStack);
 
     const AWS_BUCKET = new Config.Parameter(
@@ -48,6 +58,78 @@ export function ApiStack({ stack }: StackContext) {
         value: computeMetricsTopic.topicArn
     });
 
+    const AWS_SNS_MostFamous_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_MostFamous_TOPIC',
+        {
+            value: mostFamousMoviesTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_MostActive_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_MostActive_TOPIC',
+        {
+            value: mostActiveUsersTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_TopRated_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_TopRated_TOPIC',
+        {
+            value: topRatedMoviesTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_WorstRated_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_WorstRated_TOPIC',
+        {
+            value: worstRatedMoviesTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_BestFamous_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_BestFamous_TOPIC',
+        {
+            value: theBestAndFamousMoviesTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_MostTopRated_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_MostTopRated_TOPIC',
+        {
+            value: mostTopRateMovieListTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_LeastFamous_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_LeastFamous_TOPIC',
+        {
+            value: leastFamousMoviesTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_LeastActive_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_LeastActive_TOPIC',
+        {
+            value: leastActiveUsersTopic.topicArn
+        }
+    );
+
+    const AWS_SNS_MostWorstRated_TOPIC = new Config.Parameter(
+        stack,
+        'AWS_SNS_MostWorstRated_TOPIC',
+        {
+            value: mostWorstRateMovieListTopic.topicArn
+        }
+    );
+
     computeMetricsTopic.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
@@ -58,6 +140,8 @@ export function ApiStack({ stack }: StackContext) {
     leastFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     leastActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostWorstRateMovieList.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+
+    fanoutWithSNS.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 
     const api = new Api(stack, 'ServerlessComputingApi', {
         defaults: {
@@ -80,10 +164,20 @@ export function ApiStack({ stack }: StackContext) {
                     mostWorstRateMovieList,
                     fanoutWithSNS,
                     computeMetricsTopic,
+                    fanoutSNSandSQS,
                     AWS_BUCKET,
                     DYNAMODB_TABLE,
                     COMPUTING_LAMBDA_NAMES,
-                    AWS_SNS_TOPIC
+                    AWS_SNS_TOPIC,
+                    AWS_SNS_MostFamous_TOPIC,
+                    AWS_SNS_MostActive_TOPIC,
+                    AWS_SNS_TopRated_TOPIC,
+                    AWS_SNS_WorstRated_TOPIC,
+                    AWS_SNS_BestFamous_TOPIC,
+                    AWS_SNS_MostTopRated_TOPIC,
+                    AWS_SNS_LeastFamous_TOPIC,
+                    AWS_SNS_LeastActive_TOPIC,
+                    AWS_SNS_MostWorstRated_TOPIC
                 ]
             }
         },
@@ -92,7 +186,8 @@ export function ApiStack({ stack }: StackContext) {
                 'packages/functions/src/simpleComputing.main',
             'GET /fanoutBasic': 'packages/functions/src/fanoutEntry.main',
             'GET /fanoutWithSNS':
-                'packages/functions/src/publishMessageStartComputing.main'
+                'packages/functions/src/publishMessageStartComputing.main',
+            'GET /fanoutSNSandSQS': '/packages/functions/src'
         }
     });
 
