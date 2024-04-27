@@ -51,11 +51,11 @@ export default function workerHandler<T>(
 
                 const movies: MovieType[] = JSON.parse(data.Body.toString());
 
-                const mostFamousMoviesMetric = metricWorker(movies);
+                const movieMetric = metricWorker(movies);
 
                 const response = await putObjectToS3(
                     `metrics/${patternName}/${fileName}/${metricName}.json`,
-                    mostFamousMoviesMetric
+                    movieMetric
                 );
                 if (response.code === 400 && response.error) {
                     throw new Error(JSON.stringify(response));
