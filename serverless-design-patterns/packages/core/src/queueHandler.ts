@@ -7,7 +7,7 @@ import { Config } from 'sst/node/config';
 import { putObjectToS3 } from '../../functions/src/utils/putObjectToS3';
 import { addComputeLogToDB } from '../../functions/src/utils/addComputeLogToDB';
 
-type MetricName =
+export type MetricName =
     | 'mostFamousMovies'
     | 'mostActiveUsers'
     | 'topRatedMovies'

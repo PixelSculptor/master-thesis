@@ -617,6 +617,49 @@ export function StorageStack({ stack }: StackContext) {
         timeout: 100
     });
 
+    // Messaging pattern
+
+    const messagingPatternDlq = new Queue(stack, 'MessagingPatternDLQ');
+    const messagingPatternQueue = new Queue(stack, 'MessagingPatternQueue', {
+        cdk: {
+            queue: {
+                visibilityTimeout: Duration.seconds(150),
+                deadLetterQueue: {
+                    maxReceiveCount: 3,
+                    queue: messagingPatternDlq.cdk.queue
+                }
+            }
+        }
+    });
+
+    messagingPatternQueue.addConsumer(stack, {
+        function: {
+            description: 'Messaging Pattern Handler',
+            handler: 'packages/functions/src/monolithWorker.main',
+            memorySize: 1024,
+            timeout: 100,
+            deadLetterQueue: messagingPatternDlq.cdk.queue,
+            permissions: lambdaSqsPermissions
+        }
+    });
+
+    const publishMetricsMessagesLambda = new Function(
+        stack,
+        'PublishingMetricsMessages',
+        {
+            handler: 'packages/functions/src/publishMetricsToQueue.main',
+            memorySize: 512,
+            timeout: 100,
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: ['sqs:SendMessage'],
+                    resources: [messagingPatternQueue.cdk.queue.queueArn]
+                })
+            ]
+        }
+    );
+
     stack.addOutputs({
         Topic: computeMetricsTopic.topicName,
         Bucket: resourceBucket.bucketName,
@@ -648,6 +691,8 @@ export function StorageStack({ stack }: StackContext) {
         worstRatedMoviesTopic,
         leastActiveUsersTopic,
         leastFamousMoviesTopic,
-        fanoutSNSandSQS
+        fanoutSNSandSQS,
+        messagingPatternQueue,
+        publishMetricsMessagesLambda
     };
 }
