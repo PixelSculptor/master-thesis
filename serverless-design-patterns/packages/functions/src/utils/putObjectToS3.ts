@@ -49,3 +49,15 @@ export const fileNames = [
     'I',
     'J'
 ] as const;
+
+export const metricNames = [
+    'mostFamousMovies',
+    'mostActiveUsers',
+    'topRatedMovies',
+    'worstRatedMovies',
+    'theBestAndFamousMovies',
+    'mostTopRateMovieList',
+    'leastFamousMovies',
+    'leastActiveUsers',
+    'mostWorstRateMovieList'
+] as const;

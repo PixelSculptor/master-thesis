@@ -27,7 +27,9 @@ export function ApiStack({ stack }: StackContext) {
         mostTopRateMovieListTopic,
         leastFamousMoviesTopic,
         leastActiveUsersTopic,
-        mostWorstRateMovieListTopic
+        mostWorstRateMovieListTopic,
+        messagingPatternQueue,
+        publishMetricsMessagesLambda
     } = use(StorageStack);
 
     const AWS_BUCKET = new Config.Parameter(
@@ -132,6 +134,14 @@ export function ApiStack({ stack }: StackContext) {
         }
     );
 
+    const AWS_SQS_METRICS_QUEUE_URL = new Config.Parameter(
+        stack,
+        'AWS_SQS_METRICS_QUEUE_URL',
+        {
+            value: messagingPatternQueue.queueUrl
+        }
+    );
+
     computeMetricsTopic.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
@@ -142,6 +152,8 @@ export function ApiStack({ stack }: StackContext) {
     leastFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     leastActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostWorstRateMovieList.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+
+    messagingPatternQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 
     fanoutWithSNS.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 
@@ -167,6 +179,8 @@ export function ApiStack({ stack }: StackContext) {
                     fanoutWithSNS,
                     computeMetricsTopic,
                     fanoutSNSandSQS,
+                    messagingPatternQueue,
+                    publishMetricsMessagesLambda,
                     AWS_BUCKET,
                     DYNAMODB_TABLE,
                     AWS_SNS_TOPIC,
@@ -178,7 +192,8 @@ export function ApiStack({ stack }: StackContext) {
                     AWS_SNS_MostTopRated_TOPIC,
                     AWS_SNS_LeastFamous_TOPIC,
                     AWS_SNS_LeastActive_TOPIC,
-                    AWS_SNS_MostWorstRated_TOPIC
+                    AWS_SNS_MostWorstRated_TOPIC,
+                    AWS_SQS_METRICS_QUEUE_URL
                 ]
             }
         },
@@ -189,7 +204,9 @@ export function ApiStack({ stack }: StackContext) {
             'GET /fanoutWithSNS':
                 'packages/functions/src/publishMessageStartComputing.main',
             'GET /fanoutSNSandSQS':
-                'packages/functions/src/publishMetricToCompute.main'
+                'packages/functions/src/publishMetricToCompute.main',
+            'GET /messagingPattern':
+                'packages/functions/src/publishMetricsToQueue.main'
         }
     });
 
