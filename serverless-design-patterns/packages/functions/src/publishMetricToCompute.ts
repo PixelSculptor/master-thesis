@@ -1,10 +1,11 @@
-import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { Config } from 'sst/node/config';
 import SNS, { PublishInput } from 'aws-sdk/clients/sns';
+
+import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { fileNames } from 'src/utils/putObjectToS3';
 
 const topics = [
-    Config.AWS_SNS_MostFamous_TOPIC,
+    Config.AWS_SNS_MostFamousMovies_TOPIC,
     Config.AWS_SNS_MostActiveUsers_TOPIC,
     Config.AWS_SNS_TopRatedMovies_TOPIC,
     Config.AWS_SNS_WorstRatedMovies_TOPIC,

@@ -54,11 +54,13 @@ export function ApiStack({ stack }: StackContext) {
         }
     );
 
+    // bind this to compute fanoutBasic COMPUTING_LAMBDA_NAMES,
+
     const AWS_SNS_TOPIC = new Config.Parameter(stack, 'AWS_SNS_TOPIC', {
         value: computeMetricsTopic.topicArn
     });
 
-    const AWS_SNS_MostFamous_TOPIC = new Config.Parameter(
+    const AWS_SNS_MostFamousMovies_TOPIC = new Config.Parameter(
         stack,
         'AWS_SNS_MostFamous_TOPIC',
         {
@@ -167,9 +169,8 @@ export function ApiStack({ stack }: StackContext) {
                     fanoutSNSandSQS,
                     AWS_BUCKET,
                     DYNAMODB_TABLE,
-                    COMPUTING_LAMBDA_NAMES,
                     AWS_SNS_TOPIC,
-                    AWS_SNS_MostFamous_TOPIC,
+                    AWS_SNS_MostFamousMovies_TOPIC,
                     AWS_SNS_MostActive_TOPIC,
                     AWS_SNS_TopRated_TOPIC,
                     AWS_SNS_WorstRated_TOPIC,
@@ -187,7 +188,8 @@ export function ApiStack({ stack }: StackContext) {
             'GET /fanoutBasic': 'packages/functions/src/fanoutEntry.main',
             'GET /fanoutWithSNS':
                 'packages/functions/src/publishMessageStartComputing.main',
-            'GET /fanoutSNSandSQS': '/packages/functions/src'
+            'GET /fanoutSNSandSQS':
+                'packages/functions/src/publishMetricToCompute.main'
         }
     });
 

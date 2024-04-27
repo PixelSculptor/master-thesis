@@ -1,5 +1,5 @@
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+import { Duration } from 'aws-cdk-lib';
 import {
     Bucket,
     Function,
@@ -24,6 +24,20 @@ export function StorageStack({ stack }: StackContext) {
 
     // Fanout with SNS and SQS
 
+    const lambdaSqsPermissions = [
+        new iam.PolicyStatement({
+            actions: ['s3:GetObject', 's3:PutObject'],
+            resources: [
+                resourceBucket.bucketArn,
+                `${resourceBucket.bucketArn}/*`
+            ]
+        }),
+        new iam.PolicyStatement({
+            actions: ['dynamodb:PutItem'],
+            resources: [`${table.tableArn}`]
+        })
+    ];
+
     const mostFamousMoviesDlq = new Queue(stack, 'MostFamousMoviesDLQ');
     const mostActiveUsersDlq = new Queue(stack, 'MostActiveUsersDLQ');
     const mostTopRateMovieListDlq = new Queue(stack, 'MostTopRateMovieListDLQ');
@@ -43,6 +57,7 @@ export function StorageStack({ stack }: StackContext) {
     const mostFamousMoviesQueue = new Queue(stack, 'MostFamousMoviesQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: mostFamousMoviesDlq.cdk.queue
@@ -55,21 +70,18 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Most Famous Movies Handler',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.mostFamousMoviesHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.mostFamousMoviesHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: mostFamousMoviesDlq.cdk.queue,
-            events: [
-                new SqsEventSource(mostFamousMoviesQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
     const mostActiveUsersQueue = new Queue(stack, 'MostActiveUsersQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: mostActiveUsersDlq.cdk.queue
@@ -82,15 +94,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Most Active Users Handler',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.mostActiveUsersHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.mostActiveUsersHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: mostActiveUsersDlq.cdk.queue,
-            events: [
-                new SqsEventSource(mostActiveUsersQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -100,6 +108,7 @@ export function StorageStack({ stack }: StackContext) {
         {
             cdk: {
                 queue: {
+                    visibilityTimeout: Duration.seconds(200),
                     deadLetterQueue: {
                         maxReceiveCount: 3,
                         queue: mostTopRateMovieListDlq.cdk.queue
@@ -113,15 +122,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Most Top Rate Movie List Handler',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.mostTopRateMovieListHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.mostTopRateMovieListHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: mostTopRateMovieListDlq.cdk.queue,
-            events: [
-                new SqsEventSource(mostTopRateMovieListQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -161,6 +166,7 @@ export function StorageStack({ stack }: StackContext) {
         {
             cdk: {
                 queue: {
+                    visibilityTimeout: Duration.seconds(200),
                     deadLetterQueue: {
                         maxReceiveCount: 3,
                         queue: theBestAndFamousMoviesDlq.cdk.queue
@@ -174,15 +180,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'The Best And Famous Movies',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.theBestAndFamousMoviesHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.theBestAndFamousMoviesHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: theBestAndFamousMoviesDlq.cdk.queue,
-            events: [
-                new SqsEventSource(theBestAndFamousMoviesQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -202,6 +204,7 @@ export function StorageStack({ stack }: StackContext) {
     const topRatedMoviesQueue = new Queue(stack, 'TopRatedMoviesQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: topRatedMoviesDlq.cdk.queue
@@ -214,15 +217,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Top Rated Movies',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.topRatedMoviesHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.topRatedMoviesHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: topRatedMoviesDlq.cdk.queue,
-            events: [
-                new SqsEventSource(topRatedMoviesQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -241,6 +240,7 @@ export function StorageStack({ stack }: StackContext) {
         {
             cdk: {
                 queue: {
+                    visibilityTimeout: Duration.seconds(200),
                     deadLetterQueue: {
                         maxReceiveCount: 3,
                         queue: mostWorstRateMovieListDlq.cdk.queue
@@ -254,15 +254,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Most Worst Rate Movie List',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.mostWorstRateMovieListHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.mostWorstRateMovieListHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: mostWorstRateMovieListDlq.cdk.queue,
-            events: [
-                new SqsEventSource(mostWorstRateMovieListQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -282,6 +278,7 @@ export function StorageStack({ stack }: StackContext) {
     const worstRatedMoviesQueue = new Queue(stack, 'WorstRatedMoviesQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: worstRatedMoviesDlq.cdk.queue
@@ -294,15 +291,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Worst Rated Movies',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.worstRatedMoviesHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.worstRatedMoviesHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: worstRatedMoviesDlq.cdk.queue,
-            events: [
-                new SqsEventSource(worstRatedMoviesQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -318,6 +311,7 @@ export function StorageStack({ stack }: StackContext) {
     const leastActiveUsersQueue = new Queue(stack, 'LeastActiveUsersQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: leastActiveUsersDlq.cdk.queue
@@ -330,15 +324,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Least Active Users',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.leastActiveUsersHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.leastActiveUsersHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: leastActiveUsersDlq.cdk.queue,
-            events: [
-                new SqsEventSource(leastActiveUsersQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -354,6 +344,7 @@ export function StorageStack({ stack }: StackContext) {
     const leastFamousMoviesQueue = new Queue(stack, 'LeastFamousMoviesQueue', {
         cdk: {
             queue: {
+                visibilityTimeout: Duration.seconds(200),
                 deadLetterQueue: {
                     maxReceiveCount: 3,
                     queue: leastFamousMoviesDlq.cdk.queue
@@ -366,15 +357,11 @@ export function StorageStack({ stack }: StackContext) {
         function: {
             description: 'Least Famous Movies',
             handler:
-                'packages/functions/src/fanoutSNS_SQS/queueHandlers.leastFamousMoviesHandler',
-            timeout: 200,
-            memorySize: 1536,
+                'packages/functions/src/queueHandlers.leastFamousMoviesHandler',
+            timeout: 100,
+            memorySize: 1024,
             deadLetterQueue: leastFamousMoviesDlq.cdk.queue,
-            events: [
-                new SqsEventSource(leastFamousMoviesQueue.cdk.queue, {
-                    batchSize: 3
-                })
-            ]
+            permissions: lambdaSqsPermissions
         }
     });
 
@@ -624,57 +611,11 @@ export function StorageStack({ stack }: StackContext) {
     // Fanout SNS and SQS
 
     const fanoutSNSandSQS = new Function(stack, 'PublishMetricsToCompute', {
-        handler:
-            'packages/functions/src/fanoutSNS_SQS/publishMetricsToCompute.main',
+        handler: 'packages/functions/src/publishMetricToCompute.main',
         role: lambdaPublishingRole,
         memorySize: 256,
         timeout: 100
     });
-
-    mostFamousMoviesTopic.attachPermissionsToSubscriber(
-        'MostFamousMoviesQueue',
-        ['s3', 'dynamodb']
-    );
-
-    mostActiveUsersTopic.attachPermissionsToSubscriber('MostActiveUsersQueue', [
-        's3',
-        'dynamodb'
-    ]);
-
-    mostTopRateMovieListTopic.attachPermissionsToSubscriber(
-        'MostTopRateMovieListQueue',
-        ['s3', 'dynamodb']
-    );
-
-    mostWorstRateMovieListTopic.attachPermissionsToSubscriber(
-        'MostWorstRateMovieListQueue',
-        ['s3', 'dynamodb']
-    );
-
-    theBestAndFamousMoviesTopic.attachPermissionsToSubscriber(
-        'TheBestAndFamousMoviesQueue',
-        ['s3', 'dynamodb']
-    );
-
-    topRatedMoviesTopic.attachPermissionsToSubscriber('TopRatedMoviesQueue', [
-        's3',
-        'dynamodb'
-    ]);
-
-    worstRatedMoviesTopic.attachPermissionsToSubscriber(
-        'WorstRatedMoviesQueue',
-        ['s3', 'dynamodb']
-    );
-
-    leastActiveUsersTopic.attachPermissionsToSubscriber(
-        'LeastActiveUsersQueue',
-        ['s3', 'dynamodb']
-    );
-
-    leastFamousMoviesTopic.attachPermissionsToSubscriber(
-        'LeastFamousMoviesQueue',
-        ['s3', 'dynamodb']
-    );
 
     stack.addOutputs({
         Topic: computeMetricsTopic.topicName,
