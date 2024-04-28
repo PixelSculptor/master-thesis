@@ -39,6 +39,9 @@ case $pattern in
     "fanoutSNSandSQS")
         runProcessing "fanoutSNSandSQS"
         ;;
+    "messagingPattern")
+        runProcessing "messagingPattern"
+        ;;
     *)
         echo "Invalid pattern name"
         ;;
