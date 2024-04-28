@@ -27,7 +27,10 @@ export default function queueHandler<T>(
     return async (event: SQSEvent) => {
         const moviePromises = event.Records.map(async (message) => {
             try {
-                const messageBody: MessageBodyType = JSON.parse(message.body);
+                const messageBody: MessageBodyType = JSON.parse(
+                    JSON.parse(message.body).Message
+                );
+
                 const data = await s3
                     .getObject({
                         Bucket: Config.AWS_S3_MOVIEDATASET_BUCKET,
@@ -42,7 +45,7 @@ export default function queueHandler<T>(
                 const computedMetric = metricWorker(movies);
 
                 const response = await putObjectToS3(
-                    `metrics/'fanoutWithSNSandSQSPattern'/${messageBody.fileName}/${movieMetric}.json`,
+                    `metrics/fanoutWithSNSandSQSpattern/${messageBody.fileName}/${movieMetric}.json`,
                     computedMetric
                 );
 
@@ -55,7 +58,7 @@ export default function queueHandler<T>(
                     `${messageBody.fileName}/${movieMetric}`
                 );
             } catch (error) {
-                console.error('Erorr in processing message: ', error);
+                console.error('Error in processing message: ', error);
             }
         });
 

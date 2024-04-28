@@ -29,7 +29,16 @@ export function ApiStack({ stack }: StackContext) {
         leastActiveUsersTopic,
         mostWorstRateMovieListTopic,
         messagingPatternQueue,
-        publishMetricsMessagesLambda
+        publishMetricsMessagesLambda,
+        leastActiveUsersQueue,
+        leastFamousMoviesQueue,
+        mostActiveUsersQueue,
+        mostFamousMoviesQueue,
+        mostTopRateMovieListQueue,
+        theBestAndFamousMoviesQueue,
+        topRatedMoviesQueue,
+        worstRatedMoviesQueue,
+        mostWorstRateMovieListQueue
     } = use(StorageStack);
 
     const AWS_BUCKET = new Config.Parameter(
@@ -152,6 +161,16 @@ export function ApiStack({ stack }: StackContext) {
     leastFamousMovies.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     leastActiveUsers.bind([AWS_BUCKET, DYNAMODB_TABLE]);
     mostWorstRateMovieList.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+
+    mostFamousMoviesQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    mostActiveUsersQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    topRatedMoviesQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    worstRatedMoviesQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    theBestAndFamousMoviesQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    mostTopRateMovieListQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    leastFamousMoviesQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    leastActiveUsersQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
+    mostWorstRateMovieListQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 
     messagingPatternQueue.bind([AWS_BUCKET, DYNAMODB_TABLE]);
 

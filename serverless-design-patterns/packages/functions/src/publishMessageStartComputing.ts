@@ -15,7 +15,7 @@ export const main = apiHandler(async (event) => {
         Message: JSON.stringify({
             patternName: 'fanoutWithSNSPattern',
             bucketName: Config.AWS_S3_MOVIEDATASET_BUCKET,
-            tryNumber: event.queryStringParameters?.tryNumber ?? '1'
+            numOfTry: event.queryStringParameters?.tryNumber ?? '1'
         }),
         TopicArn: Config.AWS_SNS_TOPIC
     };
