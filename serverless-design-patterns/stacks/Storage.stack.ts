@@ -22,6 +22,29 @@ export function StorageStack({ stack }: StackContext) {
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
+    const lambdaResourceManipulationRole = new iam.Role(
+        stack,
+        'LambdaResourceManipulationRole',
+        {
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+            managedPolicies: [
+                iam.ManagedPolicy.fromAwsManagedPolicyName(
+                    'service-role/AWSLambdaBasicExecutionRole'
+                )
+            ]
+        }
+    );
+
+    lambdaResourceManipulationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['s3:*'],
+            resources: [
+                `${resourceBucket.bucketArn}`,
+                `${resourceBucket.bucketArn}/*`
+            ]
+        })
+    );
+
     // Fanout with SNS and SQS
 
     const lambdaSqsPermissions = [
@@ -74,7 +97,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -98,7 +122,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostActiveUsersDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -126,7 +151,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostTopRateMovieListDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -184,7 +210,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: theBestAndFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -221,7 +248,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: topRatedMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -258,7 +286,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostWorstRateMovieListDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -295,7 +324,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: worstRatedMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -328,7 +358,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: leastActiveUsersDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -361,7 +392,8 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: leastFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: lambdaSqsPermissions,
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -419,29 +451,6 @@ export function StorageStack({ stack }: StackContext) {
             )
         ]
     });
-
-    const lambdaResourceManipulationRole = new iam.Role(
-        stack,
-        'LambdaResourceManipulationRole',
-        {
-            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-            managedPolicies: [
-                iam.ManagedPolicy.fromAwsManagedPolicyName(
-                    'service-role/AWSLambdaBasicExecutionRole'
-                )
-            ]
-        }
-    );
-
-    lambdaResourceManipulationRole.addToPolicy(
-        new iam.PolicyStatement({
-            actions: ['s3:*'],
-            resources: [
-                `${resourceBucket.bucketArn}`,
-                `${resourceBucket.bucketArn}/*`
-            ]
-        })
-    );
 
     lambdaResourceManipulationRole.addToPolicy(
         new iam.PolicyStatement({
