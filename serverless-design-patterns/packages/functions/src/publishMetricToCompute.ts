@@ -5,15 +5,15 @@ import apiHandler from '@serverless-design-patterns/core/apiHandler';
 import { fileNames } from 'src/utils/putObjectToS3';
 
 const topics = [
-    Config.AWS_SNS_MostFamousMovies_TOPIC,
-    Config.AWS_SNS_MostActiveUsers_TOPIC,
-    Config.AWS_SNS_TopRatedMovies_TOPIC,
-    Config.AWS_SNS_WorstRatedMovies_TOPIC,
-    Config.AWS_SNS_TheBestAndFamousMovies_TOPIC,
-    Config.AWS_SNS_MostTopRateMovieList_TOPIC,
-    Config.AWS_SNS_LeastFamousMovies_TOPIC,
-    Config.AWS_SNS_LeastActiveUsers_TOPIC,
-    Config.AWS_SNS_MostWorstRateMovieList_TOPIC
+    Config.AWS_SNS_MostFamous_TOPIC,
+    Config.AWS_SNS_MostActive_TOPIC,
+    Config.AWS_SNS_TopRated_TOPIC,
+    Config.AWS_SNS_WorstRated_TOPIC,
+    Config.AWS_SNS_BestFamous_TOPIC,
+    Config.AWS_SNS_LeastActive_TOPIC,
+    Config.AWS_SNS_LeastFamous_TOPIC,
+    Config.AWS_SNS_MostWorstRated_TOPIC,
+    Config.AWS_SNS_MostTopRated_TOPIC
 ];
 
 const sns = new SNS();
@@ -25,24 +25,26 @@ export const main = apiHandler(async (event) => {
         });
     }
 
-    const numOfTry = event.queryStringParameters?.numOfTry ?? '1';
-
-    const moviePromises = topics.map(async (topic) => {
-        return fileNames.map(async (fileName) => {
-            const params: PublishInput = {
-                TopicArn: topic,
-                Message: JSON.stringify({
-                    fileName,
-                    numOfTry
-                })
-            };
-            await sns.publish(params).promise();
-        });
-    });
     try {
+        const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
+
+        const moviePromises = topics.map((topicArn) => {
+            return fileNames.map((fileName) => {
+                const params: PublishInput = {
+                    Message: JSON.stringify({
+                        fileName,
+                        numOfTry
+                    }),
+                    TopicArn: topicArn
+                };
+                return sns.publish(params).promise();
+            });
+        });
         await Promise.all(moviePromises.flat());
-        return JSON.stringify({ message: 'Message was published' });
+        console.log('Messages were published');
+        return JSON.stringify({ message: 'Messages were published' });
     } catch (error) {
+        console.log(error);
         return JSON.stringify({ message: 'Error in publishing message' });
     }
 });

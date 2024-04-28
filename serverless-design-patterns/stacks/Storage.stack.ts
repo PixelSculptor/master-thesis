@@ -22,6 +22,29 @@ export function StorageStack({ stack }: StackContext) {
 
     const resourceBucket = new Bucket(stack, 'MovieDatasetBucket');
 
+    const lambdaResourceManipulationRole = new iam.Role(
+        stack,
+        'LambdaResourceManipulationRole',
+        {
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+            managedPolicies: [
+                iam.ManagedPolicy.fromAwsManagedPolicyName(
+                    'service-role/AWSLambdaBasicExecutionRole'
+                )
+            ]
+        }
+    );
+
+    lambdaResourceManipulationRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['s3:*'],
+            resources: [
+                `${resourceBucket.bucketArn}`,
+                `${resourceBucket.bucketArn}/*`
+            ]
+        })
+    );
+
     // Fanout with SNS and SQS
 
     const lambdaSqsPermissions = [
@@ -74,7 +97,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        mostFamousMoviesQueue.cdk.queue.queueArn,
+                        mostFamousMoviesDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -98,7 +136,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostActiveUsersDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        mostActiveUsersQueue.cdk.queue.queueArn,
+                        mostActiveUsersDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -126,7 +179,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostTopRateMovieListDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        mostTopRateMovieListQueue.cdk.queue.queueArn,
+                        mostTopRateMovieListDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -184,7 +252,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: theBestAndFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        theBestAndFamousMoviesQueue.cdk.queue.queueArn,
+                        theBestAndFamousMoviesDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -221,7 +304,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: topRatedMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        topRatedMoviesQueue.cdk.queue.queueArn,
+                        topRatedMoviesDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -258,7 +356,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: mostWorstRateMovieListDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        mostWorstRateMovieListQueue.cdk.queue.queueArn,
+                        mostWorstRateMovieListDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -295,7 +408,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: worstRatedMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        worstRatedMoviesQueue.cdk.queue.queueArn,
+                        worstRatedMoviesDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -328,7 +456,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: leastActiveUsersDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        leastActiveUsersQueue.cdk.queue.queueArn,
+                        leastActiveUsersDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -361,7 +504,22 @@ export function StorageStack({ stack }: StackContext) {
             timeout: 100,
             memorySize: 1024,
             deadLetterQueue: leastFamousMoviesDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: [
+                        'sqs:SendMessage',
+                        'sqs:ReceiveMessage',
+                        'sqs:DeleteMessage',
+                        'sqs:GetQueueAttributes'
+                    ],
+                    resources: [
+                        leastFamousMoviesQueue.cdk.queue.queueArn,
+                        leastFamousMoviesDlq.cdk.queue.queueArn
+                    ]
+                })
+            ],
+            role: lambdaResourceManipulationRole
         }
     });
 
@@ -419,29 +577,6 @@ export function StorageStack({ stack }: StackContext) {
             )
         ]
     });
-
-    const lambdaResourceManipulationRole = new iam.Role(
-        stack,
-        'LambdaResourceManipulationRole',
-        {
-            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-            managedPolicies: [
-                iam.ManagedPolicy.fromAwsManagedPolicyName(
-                    'service-role/AWSLambdaBasicExecutionRole'
-                )
-            ]
-        }
-    );
-
-    lambdaResourceManipulationRole.addToPolicy(
-        new iam.PolicyStatement({
-            actions: ['s3:*'],
-            resources: [
-                `${resourceBucket.bucketArn}`,
-                `${resourceBucket.bucketArn}/*`
-            ]
-        })
-    );
 
     lambdaResourceManipulationRole.addToPolicy(
         new iam.PolicyStatement({
@@ -613,6 +748,22 @@ export function StorageStack({ stack }: StackContext) {
     const fanoutSNSandSQS = new Function(stack, 'PublishMetricsToCompute', {
         handler: 'packages/functions/src/publishMetricToCompute.main',
         role: lambdaPublishingRole,
+        permissions: [
+            new iam.PolicyStatement({
+                actions: ['sns:Publish'],
+                resources: [
+                    mostFamousMoviesTopic.topicArn,
+                    mostActiveUsersTopic.topicArn,
+                    topRatedMoviesTopic.topicArn,
+                    worstRatedMoviesTopic.topicArn,
+                    theBestAndFamousMoviesTopic.topicArn,
+                    mostTopRateMovieListTopic.topicArn,
+                    leastFamousMoviesTopic.topicArn,
+                    leastActiveUsersTopic.topicArn,
+                    mostWorstRateMovieListTopic.topicArn
+                ]
+            })
+        ],
         memorySize: 256,
         timeout: 100
     });
@@ -693,6 +844,15 @@ export function StorageStack({ stack }: StackContext) {
         leastFamousMoviesTopic,
         fanoutSNSandSQS,
         messagingPatternQueue,
-        publishMetricsMessagesLambda
+        publishMetricsMessagesLambda,
+        mostFamousMoviesQueue,
+        mostActiveUsersQueue,
+        mostTopRateMovieListQueue,
+        mostWorstRateMovieListQueue,
+        theBestAndFamousMoviesQueue,
+        topRatedMoviesQueue,
+        worstRatedMoviesQueue,
+        leastActiveUsersQueue,
+        leastFamousMoviesQueue
     };
 }
