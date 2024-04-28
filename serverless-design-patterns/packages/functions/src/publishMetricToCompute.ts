@@ -41,7 +41,8 @@ export const main = apiHandler(async (event) => {
     });
     try {
         await Promise.all(moviePromises.flat());
-        return JSON.stringify({ message: 'Message was published' });
+        console.log('Messages was published');
+        return JSON.stringify({ message: 'Messages was published' });
     } catch (error) {
         return JSON.stringify({ message: 'Error in publishing message' });
     }
