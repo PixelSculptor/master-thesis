@@ -26,14 +26,12 @@ export const main = apiHandler(async (event) => {
     }
 
     try {
-        const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
-
         const moviePromises = topics.map((topicArn) => {
             return fileNames.map((fileName) => {
                 const params: PublishInput = {
                     Message: JSON.stringify({
                         fileName,
-                        numOfTry
+                        numOfTry: event.queryStringParameters?.tryNumber ?? '1'
                     }),
                     TopicArn: topicArn
                 };

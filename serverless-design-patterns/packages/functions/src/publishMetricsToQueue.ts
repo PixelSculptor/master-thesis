@@ -12,23 +12,25 @@ export const main = apiHandler(async (event) => {
             message: 'Error: AWS_S3_MOVIEDATASET_BUCKET is not defined'
         });
     }
-    const moviePromises = fileNames.map(async (fileName) => {
-        return metricNames.map(async (metricName) => {
+    const moviePromises = fileNames.map((fileName) => {
+        return metricNames.map((metricName) => {
             const params = {
                 MessageBody: JSON.stringify({
-                    numOfTry: event.queryStringParameters?.numOfTry ?? '1',
+                    numOfTry: event.queryStringParameters?.tryNumber ?? '1',
                     fileName,
                     metricName
                 }),
                 QueueUrl: Config.AWS_SQS_METRICS_QUEUE_URL
             };
-            await sqs.sendMessage(params).promise();
+            return sqs.sendMessage(params).promise();
         });
     });
     try {
         await Promise.all(moviePromises.flat());
-        return JSON.stringify({ message: 'Messages was published' });
+        console.log('Messages were published');
+        return JSON.stringify({ message: 'Messages were published' });
     } catch (error) {
+        console.error(`Error in publishing messages:`, error);
         return JSON.stringify({ message: 'Error in publishing messages' });
     }
 });

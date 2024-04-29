@@ -790,9 +790,26 @@ export function StorageStack({ stack }: StackContext) {
             memorySize: 1024,
             timeout: 100,
             deadLetterQueue: messagingPatternDlq.cdk.queue,
-            permissions: lambdaSqsPermissions
+            role: lambdaResourceManipulationRole,
+            permissions: [
+                ...lambdaSqsPermissions,
+                new iam.PolicyStatement({
+                    actions: ['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
+                    resources: [
+                        messagingPatternQueue.cdk.queue.queueArn,
+                        messagingPatternDlq.cdk.queue.queueArn
+                    ]
+                })
+            ]
         }
     });
+
+    lambdaPublishingRole.addToPolicy(
+        new iam.PolicyStatement({
+            actions: ['sqs:SendMessage'],
+            resources: [messagingPatternQueue.cdk.queue.queueArn]
+        })
+    );
 
     const publishMetricsMessagesLambda = new Function(
         stack,
@@ -807,7 +824,8 @@ export function StorageStack({ stack }: StackContext) {
                     actions: ['sqs:SendMessage'],
                     resources: [messagingPatternQueue.cdk.queue.queueArn]
                 })
-            ]
+            ],
+            role: lambdaPublishingRole
         }
     );
 

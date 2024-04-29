@@ -6,17 +6,7 @@ import { MessageBodyType } from '../../types/MessageType';
 import { Config } from 'sst/node/config';
 import { putObjectToS3 } from '../../functions/src/utils/putObjectToS3';
 import { addComputeLogToDB } from '../../functions/src/utils/addComputeLogToDB';
-
-export type MetricName =
-    | 'mostFamousMovies'
-    | 'mostActiveUsers'
-    | 'topRatedMovies'
-    | 'worstRatedMovies'
-    | 'theBestAndFamousMovies'
-    | 'mostTopRateMovieList'
-    | 'leastFamousMovies'
-    | 'leastActiveUsers'
-    | 'mostWorstRateMovieList';
+import { MetricName } from '../../types/ComputingTypes';
 
 const s3 = new S3();
 
@@ -27,7 +17,7 @@ export default function queueHandler<T>(
     return async (event: SQSEvent) => {
         const moviePromises = event.Records.map(async (message) => {
             try {
-                const messageBody: MessageBodyType = JSON.parse(
+                const messageBody = JSON.parse(
                     JSON.parse(message.body).Message
                 );
 
