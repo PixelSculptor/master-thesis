@@ -42,7 +42,7 @@ export default function queueHandler<T>(
                 const computedMetric = metricWorker(movies);
 
                 const response = await putObjectToS3(
-                    `metrics/fanoutWithSNSandSQSpattern/${fileName}/${movieMetric}.json`,
+                    `metrics/${messageBody.patternName}/${fileName}/${movieMetric}.json`,
                     computedMetric
                 );
 
@@ -51,7 +51,7 @@ export default function queueHandler<T>(
                 }
 
                 await addComputeLogToDB(
-                    'fanoutWithSNSandSQSPattern',
+                    `${messageBody.patternName}`,
                     messageBody.numOfTry,
                     `${fileName}/${movieMetric}`
                 );
