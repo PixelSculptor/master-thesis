@@ -26,21 +26,17 @@ export const main = apiHandler(async (event) => {
     }
 
     try {
-        const numOfTry = event.queryStringParameters?.tryNumber ?? '1';
-
-        const moviePromises = topics.map((topicArn) => {
-            return fileNames.map((fileName) => {
-                const params: PublishInput = {
-                    Message: JSON.stringify({
-                        fileName,
-                        numOfTry
-                    }),
-                    TopicArn: topicArn
-                };
-                return sns.publish(params).promise();
-            });
+        const moviePromises = topics.map(async (topicArn) => {
+            const params: PublishInput = {
+                Message: JSON.stringify({
+                    numOfTry: event.queryStringParameters?.tryNumber ?? '1',
+                    patternName: 'fanoutWithSNSandSQSPattern'
+                }),
+                TopicArn: topicArn
+            };
+            return sns.publish(params).promise();
         });
-        await Promise.all(moviePromises.flat());
+        await Promise.all(moviePromises);
         console.log('Messages were published');
         return JSON.stringify({ message: 'Messages were published' });
     } catch (error) {

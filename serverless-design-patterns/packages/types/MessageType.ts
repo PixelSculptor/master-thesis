@@ -1,4 +1,4 @@
-import { MetricName } from '@serverless-design-patterns/core/queueHandler';
+import { MetricName } from './ComputingTypes';
 
 export type MessageBodyType = {
     fileName: string;
@@ -7,6 +7,17 @@ export type MessageBodyType = {
 
 export type MessageMetricType = {
     numOfTry: string;
-    nameOfFile: string;
+    fileName: string;
     metricName: MetricName;
+};
+
+export const isSQSMessage = (
+    payload: unknown
+): payload is MessageMetricType => {
+    if (typeof payload !== 'object' || payload === null) return false;
+    return (
+        (payload as MessageMetricType).metricName !== undefined &&
+        (payload as MessageMetricType).fileName !== undefined &&
+        (payload as MessageMetricType).numOfTry !== undefined
+    );
 };

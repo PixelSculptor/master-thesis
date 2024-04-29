@@ -3,3 +3,14 @@ export type LambdaPayload = {
     InvocationType: string;
     Payload: string;
 };
+
+export type MetricName =
+    | 'mostFamousMovies'
+    | 'mostActiveUsers'
+    | 'topRatedMovies'
+    | 'worstRatedMovies'
+    | 'theBestAndFamousMovies'
+    | 'mostTopRateMovieList'
+    | 'leastFamousMovies'
+    | 'leastActiveUsers'
+    | 'mostWorstRateMovieList';
