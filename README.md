@@ -30,7 +30,9 @@ Each serverless pattern will be solving same problem - compute some of metrics b
 ### Monolith Computing
 
 This pattern is the simplest approach to serverless computing. It only consists of one Lambda which is responsible for managing and computing metrics. After each computation result is saved in S3 bucket and metadata in DynamoDB table.
+
 ![Monolith Computing Pattern](./diagrams/Monolith_pattern.png)
+
 _Monolith Computing Pattern_
 
 ### Messaging Pattern
@@ -38,6 +40,7 @@ _Monolith Computing Pattern_
 This type of serverless pattern is focusing on passing messages to Lambda rather than improving computing performance. There is entry Lambda which focus on passing to SQS queue different messages which consist of information which file (movie service) to get as input data and which metric to compute. There is element which improves safeness - Dead Letter Queue (DLQ), which allows cloud administrator capture messages which had not served by computing Lambda. Right part of pattern is same as previous solution.
 
 ![Messaging Pattern](./diagrams//Messaging_pattern%20.png)
+
 _Message passing pattern_
 
 ### Fanout pattern(s)
@@ -51,6 +54,7 @@ Modifications of Fanout pattern:
   Approach with SNS as trigger has one topic subscribed by every compute Lambda. Moreover, the last Fanout solution also has a pub-sub SNS service, but has as many topics defined as there are film metrics.
 
 ![Fanout patterns](./diagrams/Fanout_patterns.png)
+
 _Fanout Patterns_
 
 ### Priority Queue Pattern
@@ -58,4 +62,5 @@ _Fanout Patterns_
 This is another variety of message passing pattern which allows cloud architect defines priority metric to compute for target customer. Rest of metrics are computed by second SQS and Lambda.
 
 ![Priority Queue Pattern](./diagrams/Priority_queue_pattern.png)
+
 _Priority Queue Pattern_
