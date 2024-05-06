@@ -8,6 +8,7 @@
 4. [Patterns](#patterns)
 5. [Master Thesis Analysis](#master-thesis-analysis)
 6. [CI/CD Workflow](#cicd-workflow)
+7. [Sources](#sources)
 
 ## Introduction
 
@@ -75,3 +76,5 @@ _Priority Queue Pattern_
 ## Master Thesis Analysis
 
 ## CI/CD Workflow
+
+## Sources
