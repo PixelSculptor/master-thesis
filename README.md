@@ -4,11 +4,16 @@
 
 1. [Introduction](#introduction)
 2. [Computing](#computing)
-3. [Patterns](#patterns)
+3. [Installation](#installation)
+4. [Patterns](#patterns)
+5. [Master Thesis Analysis](#master-thesis-analysis)
+6. [CI/CD Workflow](#cicd-workflow)
 
 ## Introduction
 
 This repo is master thesis project about serverless desgin patterns carried out at Poznan University of Technology in the speclialisation Distributed and Cloud Systems.
+
+### Prerequisites
 
 ## Computing
 
@@ -24,6 +29,8 @@ Each serverless pattern will be solving same problem - compute some of metrics b
 - Rankig of best rated movies
 - Ranking of best rated movies but by most frequently rated
 - Movies with the highest amount of the best (greater than 4.0) rate and the worst rate (less than 3.0).
+
+## Installation
 
 ## Patterns
 
@@ -64,3 +71,7 @@ This is another variety of message passing pattern which allows cloud architect 
 ![Priority Queue Pattern](./diagrams/Priority_queue_pattern.png)
 
 _Priority Queue Pattern_
+
+## Master Thesis Analysis
+
+## CI/CD Workflow
