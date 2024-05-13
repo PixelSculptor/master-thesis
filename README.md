@@ -6,8 +6,9 @@
 2. [Computing](#computing)
 3. [Installation](#installation)
 4. [Patterns](#patterns)
-5. [CI/CD Workflow](#cicd-workflow)
-6. [Sources](#sources)
+5. [Master Thesis Analysis](#master-thesis-analysis)
+6. [CI/CD Workflow](#cicd-workflow)
+7. [Sources](#sources)
 
 ## Introduction
 
@@ -90,6 +91,11 @@ Modifications of Fanout pattern:
 This is another variety of message passing pattern which allows cloud architect defines priority metric to compute for target customer. Rest of metrics are computed by second SQS and Lambda.
 
 ![Priority Queue Pattern](./diagrams/Priority_queue_pattern.png)
+
+## Master Thesis Analysis
+
+These patterns are included in practical part of master thesis **_Effectivenes Analysis of Serverless Design Patterns based on AWS Lambda_** under the guidance of the supervisor **PhD Michał Kalewski** on **Poznan University of Technology (PUT)**.
+Some of these patterns were used to check performance effectiveness of serverless computing, comparing monolith processing with parallelized processing (fanout patterns). There were measured: **billing duration, init time and used memory and of course total costs** especially to check how processing time changes in relation to the Lambda functions memory configuration. It was also tested whether and how the performance of the patterns changes depending on the change of trigger (entry Lambda vs SNS event notification). Due to similar processing times for _Fanout_, _Messaging Pattern_ and _Priority Queue Pattern_, these models served to theoretical analysis how we can increase scalablity, availability and resilience of serverless systems in addition to performance using different approaches.
 
 ## CI/CD Workflow
 
